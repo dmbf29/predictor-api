@@ -11,6 +11,7 @@ class User < ApplicationRecord
   validates :timezone, presence: true
 
   def leagues
+    # this includes creator or league and members
     League.includes(:memberships).where(memberships: { user: self }).or(League.where(user: self))
   end
 end

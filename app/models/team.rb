@@ -5,6 +5,7 @@ class Team < ApplicationRecord
   validates :abbrev, presence: true, uniqueness: true
 
   def matches
+    # teams can either be home or away
     Match.where('team_home_id = ? OR team_away_id = ?', id, id)
   end
 end
