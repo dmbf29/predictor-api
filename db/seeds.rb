@@ -1,8 +1,18 @@
 require 'open-uri'
 
+puts 'Getting Admin users...'
 doug = User.find_by(email: 'douglasmberkley@gmail.com') || User.create(email: 'douglasmberkley@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
 trouni = User.find_by(email: 'trouni@gmail.com') || User.create(email: 'trouni@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
 james = User.find_by(email: 'devereuxjj@gmail.com') || User.create(email: 'devereuxjj@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
+
+puts 'Creating test users...'
+20.times do
+  User.create(
+    email: Faker::Internet.safe_email,
+    password: '123123'
+  )
+end
+puts "... #{User.count} Total Users"
 
 groups = {
   'Group A' => [
