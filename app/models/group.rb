@@ -3,4 +3,5 @@ class Group < ApplicationRecord
   has_many :matches
   has_many :affiliations
   has_many :teams, through: :affiliations
+  validates :name, presence: true
 end

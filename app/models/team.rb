@@ -3,4 +3,6 @@ class Team < ApplicationRecord
   # has_many :matches
   has_many :affiliations
   has_many :groups, through: :affiliations
+  validates :name, presence: true, uniqueness: true
+  validates :abbrev, presence: true, uniqueness: true
 end

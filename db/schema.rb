@@ -57,7 +57,7 @@ ActiveRecord::Schema.define(version: 2021_04_07_061624) do
     t.datetime "kickoff_time"
     t.integer "team_home_score"
     t.integer "team_away_score"
-    t.integer "status"
+    t.integer "status", default: 0
     t.bigint "group_id", null: false
     t.bigint "team_away_id"
     t.bigint "team_home_id"
