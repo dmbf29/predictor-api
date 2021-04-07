@@ -1,4 +1,5 @@
-# url = "https://www.uefa.com/imgml/flags/70x70/CZE.png?imwidth=2048%202048w"
+require 'open-uri'
+
 groups = {
   'Group A' => [
     { name: 'Italy', abbrev: 'ITA' },
@@ -61,3 +62,13 @@ groups.each_key do |group_name|
 end
 puts "...#{Team.count} Total Teams"
 puts "...#{Group.count} Total Groups"
+
+Team.find_each do |team|
+  next if unless team.badge.attached?
+
+  url = "https://www.uefa.com/imgml/flags/70x70/#{team.abbrev}.png?imwidth=2048%202048w"
+  puts "#{team.name}: #{url}"
+  file = URI.open(url)
+  team.badge.attach(id: file, filename: 'badge.png', content_type: 'image/png')
+  puts team.badge.attached? ? 'Success' : 'Failed'
+end
