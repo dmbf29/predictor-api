@@ -6,6 +6,6 @@ class Team < ApplicationRecord
 
   def matches
     # teams can either be home or away
-    Match.where('team_home_id = ? OR team_away_id = ?', id, id)
+    Match.where('team_home_id = :id OR team_away_id = :id', id: id)
   end
 end
