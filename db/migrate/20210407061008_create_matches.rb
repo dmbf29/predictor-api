@@ -8,7 +8,6 @@ class CreateMatches < ActiveRecord::Migration[6.1]
       t.references :group, null: false, foreign_key: true
       t.references :team_away, foreign_key: { to_table: :teams }
       t.references :team_home, foreign_key: { to_table: :teams }
-      t.references :next_match, foreign_key: { to_table: :match }
 
       t.timestamps
     end
