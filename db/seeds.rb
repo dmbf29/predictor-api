@@ -44,11 +44,11 @@ groups = {
 }
 
 puts 'Creating the Euros...'
-competition = Competition.find_or_create_by!(name: 'Euro 2020', start_date: Date.new(2021, 6, 12), end_date: Date.new(2021, 7, 12))
+euros = Competition.find_or_create_by!(name: 'Euro 2020', start_date: Date.new(2021, 6, 12), end_date: Date.new(2021, 7, 12))
 puts '.. created the Euros'
 
 puts 'Creating or finding first round...'
-first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: competition)
+first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: euros)
 puts "...#{Round.count} Total Rounds"
 
 puts 'Creating or finding groups...'
@@ -72,4 +72,16 @@ Team.find_each do |team|
   file = URI.open(url)
   team.badge.attach(io: file, filename: 'badge.png', content_type: 'image/png')
   puts team.badge.attached? ? 'Success' : 'Failed'
+end
+
+puts 'Creating a test league as James'
+league = League.find_or_create_by!(
+  name: 'Admin League',
+  competition: euros,
+  user: james
+)
+
+puts 'Adding Trouni and Doug to the league'
+[trouni, doug].each do |user|
+  Membership.find_or_create_by!(league: league, user: user)
 end
