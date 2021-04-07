@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  kickoff_time: 2021-04-07 15:10:08
+  team_home_score: 1
+  team_away_score: 1
+  status: 1
+  group: one
+  team_away: one
+  team_home: one
+  next_match: one
+
+two:
+  kickoff_time: 2021-04-07 15:10:08
+  team_home_score: 1
+  team_away_score: 1
+  status: 1
+  group: two
+  team_away: two
+  team_home: two
+  next_match: two
