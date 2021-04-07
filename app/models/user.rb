@@ -4,11 +4,13 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable
   has_many :memberships
-  has_many :leagues, through: :memberships
-  # has_many :leagues_as_owner, mod
   has_many :competitions, through: :leagues
   has_many :predictions
   has_many :matches, through: :predictions
   validates :name, presence: true
   validates :timezone, presence: true
+
+  def leagues
+    League.includes(:memberships).where(memberships: { user: self }).or(League.where(user: self))
+  end
 end
