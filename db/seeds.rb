@@ -26,9 +26,9 @@ groups = {
   ],
   'Group E' => [
     { name: 'Poland', abbrev: 'POL' },
-    { name: 'Slovakia   ', abbrev: 'SVK' },
-    { name: 'Spain', abbrev: 'TUR' },
-    { name: 'Sweden', abbrev: 'WAL' }
+    { name: 'Slovakia', abbrev: 'SVK' },
+    { name: 'Spain', abbrev: 'ESP' },
+    { name: 'Sweden', abbrev: 'SWE' }
   ],
   'Group F' => [
     { name: 'France', abbrev: 'FRA' },
@@ -50,8 +50,14 @@ puts "...#{Round.count} Total Rounds"
 
 puts 'Creating or finding groups...'
 groups.each_key do |group_name|
-  p "...#{group_name}..."
+  puts "...#{group_name}..."
   group = Group.find_or_create_by(name: group_name, round: first_round)
   p group.errors.full_messages if group.errors.any?
+  groups[group_name].each do |team_hash|
+    puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
+    team = Team.find_or_create_by(team_hash)
+    p team.errors.full_messages if team.errors.any?
+  end
 end
+puts "...#{Team.count} Total Teams"
 puts "...#{Group.count} Total Groups"
