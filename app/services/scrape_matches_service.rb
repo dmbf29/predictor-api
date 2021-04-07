@@ -29,44 +29,42 @@ class ScrapeMatchesService
     sleep(10)
     html_doc = Nokogiri::HTML.parse(browser.html)
 
-    # The HTML is so crazily organized
-    # for each match row, there is an h3 with the date (some are hidden) / groups
-    dates = html_doc.search('.matches-match_date')
-    puts "Found #{dates.count} dates (should be 12)"
+    # The HTML is crazily organized
     groups = html_doc.search('.match-row_group .match-group')
     puts "Found #{groups.count} groups (should be 12)"
 
     html_doc.search('.match-row_link').each_with_index do |match_row, index|
-      # Tried about 100 ways before I got to this. Others weren't loading in time(?)
-      epoch = JSON.parse(match_row.search('.match-row_match').first.attributes["data-options"].value)['match']["MatchDateTime"].delete('/Date()/')
-      puts 'Epoch:'
-      p epoch
-
-      kickoff_time = DateTime.strptime(epoch, '%Q')
-      puts 'Kickoff time:'
-      p kickoff_time
-
-      home_name = match_row.search('.team-home .team-name').text.strip
-      team_home = Team.find_by(name: home_name)
-      puts 'Home team:'
-      p team_home
-
-      away_name = match_row.search('.team-away .team-name').text.strip
-      team_away = Team.find_by(name: away_name)
-      puts 'Away team:'
-      p team_away
-
-      group_name = groups[index].attributes['title'].value
-      group = Group.find_by(name: group_name)
-      puts 'Group:'
-      p group
-
       p Match.find_or_create_by(
-        kickoff_time: kickoff_time,
-        team_home: team_home,
-        team_away: team_away,
-        group: group
+        kickoff_time: get_kickoff_time(match_row),
+        team_home: get_team_home(match_row),
+        team_away: get_team_away(match_row),
+        group: get_group(groups[index])
       )
     end
+  end
+
+  def get_team_home(match_row)
+    home_name = match_row.search('.team-home .team-name').text.strip
+    puts "Home team: #{home_name}"
+    Team.find_by(name: home_name)
+  end
+
+  def get_team_away(match_row)
+    away_name = match_row.search('.team-away .team-name').text.strip
+    puts "Away team: #{away_name}"
+    Team.find_by(name: away_name)
+  end
+
+  def get_kickoff_time(match_row)
+    # Tried about 100 ways before I got to this. Others weren't loading in time(?)
+    epoch = JSON.parse(match_row.search('.match-row_match').first.attributes["data-options"].value)['match']["MatchDateTime"].delete('/Date()/')
+    puts "Epoch: #{epoch}"
+    DateTime.strptime(epoch, '%Q')
+  end
+
+  def get_group(group_element)
+    group_name = group_element.attributes['title'].value
+    puts "Group: #{group_name}"
+    Group.find_by(name: group_name)
   end
 end
