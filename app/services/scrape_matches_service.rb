@@ -11,7 +11,7 @@ class ScrapeMatchesService
     group_stage_url = 'https://www.uefa.com/uefaeuro-2020/fixtures-results/#/md/'
     group_stages_ids.each { |id| @urls << "#{group_stage_url}#{id}" }
 
-    # TODO: Knockout stages have placeholders for winners of groups, not team names yet.
+    # TODO: Knockout stages have placeholders for winners of groups, not team names.
     # knockout_ids = [2001025, 2001026, 2001027, 2001028]
     # knockout_url = 'https://www.uefa.com/uefaeuro-2020/fixtures-results/#/rd/'
     # knockout_ids.each { |id| @urls << "#{knockout_url}#{id}" }
