@@ -9,4 +9,6 @@ class User < ApplicationRecord
   has_many :competitions, through: :leagues
   has_many :predictions
   has_many :matches, through: :predictions
+  validates :name, presence: true
+  validates :timezone, presence: true
 end

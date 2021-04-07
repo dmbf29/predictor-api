@@ -5,4 +5,7 @@ class Match < ApplicationRecord
   belongs_to :next_match, class_name: 'Match', optional: true
   has_many :predictions
   has_many :users, through: :predictions
+  validates :kickoff_time, presence: true
+  validates :status, presence: true
+  enum status: %i[awaiting started finished]
 end
