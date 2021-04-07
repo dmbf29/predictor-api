@@ -8,6 +8,7 @@ james = User.find_by(email: 'devereuxjj@gmail.com') || User.create(email: 'dever
 puts 'Creating test users...'
 20.times do
   User.create(
+    # fake emails for testing purposes
     email: Faker::Internet.safe_email,
     password: '123123'
   )
