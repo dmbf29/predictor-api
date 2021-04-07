@@ -3,7 +3,7 @@ require 'open-uri'
 groups = {
   'Group A' => [
     { name: 'Italy', abbrev: 'ITA' },
-    { name: 'Switzerland  ', abbrev: 'SUI' },
+    { name: 'Switzerland', abbrev: 'SUI' },
     { name: 'Turkey', abbrev: 'TUR' },
     { name: 'Wales', abbrev: 'WAL' }
   ],
@@ -33,7 +33,7 @@ groups = {
   ],
   'Group F' => [
     { name: 'France', abbrev: 'FRA' },
-    { name: 'Germany  ', abbrev: 'GER' },
+    { name: 'Germany', abbrev: 'GER' },
     { name: 'Hungary', abbrev: 'HUN' },
     { name: 'Portugal', abbrev: 'POR' }
   ]
@@ -64,11 +64,11 @@ puts "...#{Team.count} Total Teams"
 puts "...#{Group.count} Total Groups"
 
 Team.find_each do |team|
-  next if unless team.badge.attached?
+  next if team.badge.attached?
 
-  url = "https://www.uefa.com/imgml/flags/70x70/#{team.abbrev}.png?imwidth=2048%202048w"
+  url = "https://www.uefa.com/imgml/flags/140x140/#{team.abbrev}.png?imwidth=2048%202048w"
   puts "#{team.name}: #{url}"
   file = URI.open(url)
-  team.badge.attach(id: file, filename: 'badge.png', content_type: 'image/png')
+  team.badge.attach(io: file, filename: 'badge.png', content_type: 'image/png')
   puts team.badge.attached? ? 'Success' : 'Failed'
 end
