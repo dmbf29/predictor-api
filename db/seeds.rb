@@ -84,7 +84,7 @@ Team.find_each do |team|
   puts team.badge.attached? ? 'Success' : 'Failed'
 end
 
-puts 'Creating a test league as James'
+puts 'Creating a test league w/ James as creator'
 league = League.find_or_create_by!(
   name: 'Admin League',
   competition: euros,
