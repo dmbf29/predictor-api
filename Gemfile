@@ -29,6 +29,7 @@ gem 'rack-cors'
 gem 'cloudinary', '~> 1.16.0'
 gem 'devise'
 gem 'faker'
+gem 'pundit'
 gem 'watir', '6.16.5'
 gem 'webdrivers'
 
