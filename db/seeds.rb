@@ -1,5 +1,9 @@
 require 'open-uri'
 
+doug = User.find_by(email: 'douglasmberkley@gmail.com') || User.create(email: 'douglasmberkley@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
+trouni = User.find_by(email: 'trouni@gmail.com') || User.create(email: 'trouni@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
+james = User.find_by(email: 'devereuxjj@gmail.com') || User.create(email: 'devereuxjj@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
+
 groups = {
   'Group A' => [
     { name: 'Italy', abbrev: 'ITA' },
@@ -40,24 +44,21 @@ groups = {
 }
 
 puts 'Creating the Euros...'
-competition = Competition.find_or_create_by(name: 'Euro 2020', start_date: Date.new(2021, 6, 12), end_date: Date.new(2021, 7, 12))
-p competition.errors.full_messages if competition.errors.any?
+competition = Competition.find_or_create_by!(name: 'Euro 2020', start_date: Date.new(2021, 6, 12), end_date: Date.new(2021, 7, 12))
 puts '.. created the Euros'
 
 puts 'Creating or finding first round...'
-first_round = Round.find_or_create_by(name: 'Group Stage', number: 1, competition: competition)
-p first_round.errors.full_messages if first_round.errors.any?
+first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: competition)
 puts "...#{Round.count} Total Rounds"
 
 puts 'Creating or finding groups...'
 groups.each_key do |group_name|
   puts "...#{group_name}..."
-  group = Group.find_or_create_by(name: group_name, round: first_round)
-  p group.errors.full_messages if group.errors.any?
+  group = Group.find_or_create_by!(name: group_name, round: first_round)
   groups[group_name].each do |team_hash|
     puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
-    team = Team.find_or_create_by(team_hash)
-    p team.errors.full_messages if team.errors.any?
+    team = Team.find_or_create_by!(team_hash)
+    Affiliation.find_or_create_by!(team: team, group: group)
   end
 end
 puts "...#{Team.count} Total Teams"
