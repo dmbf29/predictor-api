@@ -96,3 +96,5 @@ puts 'Adding Trouni and Doug to the league'
 [trouni, doug].each do |user|
   Membership.find_or_create_by!(league: league, user: user)
 end
+
+ScrapeMatchesService.new.call
