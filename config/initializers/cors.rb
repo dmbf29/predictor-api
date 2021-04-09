@@ -8,16 +8,18 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins [
-      %r(\Ahttps?:\/\/localhost:\d{4})
-      # TODO: Add production domain and Netlify urls for staging/previews:
+      # Local server
+      %r{\Ahttps?://localhost:\d{4}},
+      # Netlify app and preview deploys
+      %r{\Ahttps?://(.+--)?soccer-predictor.\.netlify\.app}
+      # TODO: Add production domain url:
       # %r(\Ahttps?:\/\/.+\.app-name\.com),
-      # %r(\Ahttps?:\/\/.*app-name\.netlify\.app),
     ]
 
     resource '*',
-      headers: :any,
-      expose: ['access-token', 'expiry', 'token-type', 'uid', 'client'],
-      methods: [:get, :post, :options, :delete, :put],
-      credentials: true
+             headers: :any,
+             expose: %w[access-token expiry token-type uid client],
+             methods: %i[get post options delete put],
+             credentials: true
   end
 end
