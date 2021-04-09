@@ -5,12 +5,19 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
-# Rails.application.config.middleware.insert_before 0, Rack::Cors do
-#   allow do
-#     origins 'example.com'
-#
-#     resource '*',
-#       headers: :any,
-#       methods: [:get, :post, :put, :patch, :delete, :options, :head]
-#   end
-# end
+Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  allow do
+    origins [
+      %r(\Ahttps?:\/\/localhost:\d{4})
+      # TODO: Add production domain and Netlify urls for staging/previews:
+      # %r(\Ahttps?:\/\/.+\.app-name\.com),
+      # %r(\Ahttps?:\/\/.*app-name\.netlify\.app),
+    ]
+
+    resource '*',
+      headers: :any,
+      expose: ['access-token', 'expiry', 'token-type', 'uid', 'client'],
+      methods: [:get, :post, :options, :delete, :put],
+      credentials: true
+  end
+end
