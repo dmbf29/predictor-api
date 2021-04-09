@@ -3,12 +3,15 @@ Rails.application.routes.draw do
   namespace :v1 do
     resources :competitions, only: [] do
       resources :matches, only: [:index]
-      resources :leagues, only: [:index, :create, :destroy]
+      resources :leagues, only: [:index, :create]
       resources :users, only: [:show]
-      resources :memberships, only: [:create, :destroy]
+      resources :memberships, only: [:create]
     end
     resources :matches, only: [] do
-      resources :predictions, only: [:create, :update]
+      resources :predictions, only: [:create]
     end
+    resources :predictions, only: [:update]
+    resources :leagues, only: [:destroy]
+    resources :memberships, only: [:destroy]
   end
 end
