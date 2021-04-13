@@ -4,15 +4,12 @@ Rails.application.routes.draw do
     resources :competitions, only: [:show] do
       resources :leagues, only: [:index, :create]
     end
-    resources :matches, only: [] do
-      resources :predictions, only: [:create]
+    resources :matches, only: [:index], shallow: true do
+      resources :predictions, only: [:create, :update]
     end
-    resources :leagues, only: [:destroy] do
-      resources :memberships, only: [:create]
+    resources :leagues, only: [:destroy], shallow: true do
+      resources :memberships, only: [:create, :destroy]
     end
-    resources :matches, only: [:index]
-    resources :predictions, only: [:update]
-    resources :memberships, only: [:destroy]
     resources :users, only: [:show]
   end
 end
