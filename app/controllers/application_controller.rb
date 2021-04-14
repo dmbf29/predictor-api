@@ -2,6 +2,8 @@ class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
   include Pundit
 
+  before_action :authenticate_user!, unless: :token_auth_controller?
+
   # Pundit: white-list approach.
   after_action :verify_authorized, except: :index, unless: :skip_pundit?
   after_action :verify_policy_scoped, only: :index, unless: :skip_pundit?
@@ -23,5 +25,9 @@ class ApplicationController < ActionController::API
 
   def skip_pundit?
     devise_controller? || params[:controller] =~ /(^(rails_)?admin)|(^pages$)/
+  end
+
+  def token_auth_controller?
+    params[:controller].split('/').include? 'devise_token_auth'
   end
 end
