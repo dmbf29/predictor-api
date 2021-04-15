@@ -6,6 +6,8 @@ class Prediction < ApplicationRecord
   enum choice: %i[home away draw]
 
   def correct?
+    return unless match.finished?
+    
     choice == match.winner_side
   end
 end
