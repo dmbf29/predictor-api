@@ -13,6 +13,8 @@ class Match < ApplicationRecord
   validate :round_xor_group
 
   def draw?
+    return unless finished?
+
     team_home_score == team_away_score
   end
 
@@ -21,12 +23,14 @@ class Match < ApplicationRecord
   end
 
   def winner
-    return nil if draw?
+    return unless finished?
+    return if draw?
 
     winner_side == 'home' ? team_home : team_away
   end
 
   def winner_side
+    return unless finished?
     return 'draw' if draw?
 
     team_home_score > team_away_score ? 'home' : 'away'
