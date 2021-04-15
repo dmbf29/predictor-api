@@ -7,7 +7,8 @@ Rails.application.routes.draw do
       resources :leagues, only: [:index, :create]
     end
     resources :matches, only: [:index], shallow: true do
-      resources :predictions, only: [:create, :update]
+      resources :predictions, only: [:create]
+      patch :predictions, to: 'predictions#update', as: :prediction
     end
     resources :leagues, only: [:destroy], shallow: true do
       resources :memberships, only: [:create, :destroy]
