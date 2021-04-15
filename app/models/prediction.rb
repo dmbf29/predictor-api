@@ -7,7 +7,7 @@ class Prediction < ApplicationRecord
 
   def correct?
     return unless match.finished?
-    
+
     choice == match.winner_side
   end
 end
