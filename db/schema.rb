@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_09_090454) do
+ActiveRecord::Schema.define(version: 2021_04_15_013709) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,14 +86,16 @@ ActiveRecord::Schema.define(version: 2021_04_09_090454) do
     t.integer "team_home_score"
     t.integer "team_away_score"
     t.integer "status", default: 0
-    t.bigint "group_id", null: false
+    t.bigint "group_id"
     t.bigint "team_away_id"
     t.bigint "team_home_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "next_match_id"
+    t.bigint "round_id"
     t.index ["group_id"], name: "index_matches_on_group_id"
     t.index ["next_match_id"], name: "index_matches_on_next_match_id"
+    t.index ["round_id"], name: "index_matches_on_round_id"
     t.index ["team_away_id"], name: "index_matches_on_team_away_id"
     t.index ["team_home_id"], name: "index_matches_on_team_home_id"
   end
@@ -173,6 +175,7 @@ ActiveRecord::Schema.define(version: 2021_04_09_090454) do
   add_foreign_key "leagues", "users"
   add_foreign_key "matches", "groups"
   add_foreign_key "matches", "matches", column: "next_match_id"
+  add_foreign_key "matches", "rounds"
   add_foreign_key "matches", "teams", column: "team_away_id"
   add_foreign_key "matches", "teams", column: "team_home_id"
   add_foreign_key "memberships", "leagues"
