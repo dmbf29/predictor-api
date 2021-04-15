@@ -39,6 +39,6 @@ class Match < ApplicationRecord
   private
 
   def round_xor_group
-    errors.add(:round_id, 'either round_id or group_id needs a value') unless group_id.present? ^ round_id.present?
+    errors.add(:round_id, 'or Group (not both) must exist') unless group_id.present? ^ round_id.present?
   end
 end
