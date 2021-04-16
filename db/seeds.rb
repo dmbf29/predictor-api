@@ -100,12 +100,9 @@ end
 ScrapeMatchesService.new.call
 
 puts 'Assigning random scores to matches before June 22nd'
-Match.all.each do |match|
-  if match.kickoff_time < Date.new(2021, 06, 22)
-    match.update(team_away_score: rand(4), team_home_score: rand(4), status: :finished)
-  else
-    # Needed when migrating status enum from integer to string
-    match.update(status: :upcoming)
-  end
+Match.where('kickoff_time < ?', Date.new(2021, 6, 22)).each do |match|
+  match.update(team_away_score: rand(4), team_home_score: rand(4), status: :finished)
 end
+# Needed when migrating status enum from integer to string:
+Match.where('kickoff_time >= ?', Date.new(2021, 6, 22)).update(status: :upcoming)
 puts "...#{Match.finished.count} Finished Matches and #{Match.upcoming.count} Upcoming Matches"
