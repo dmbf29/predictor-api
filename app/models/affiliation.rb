@@ -4,11 +4,24 @@ class Affiliation < ApplicationRecord
   validates_uniqueness_of :team, scope: :group
 
   def points
-    # Could probably be optimized into a single query
-    team.victories.count * 3 + team.draws.count
+    victories.count * 3 + draws.count
   end
 
   def goal_diff
-    # TODO
+    victories.sum('ABS(team_home_score - team_away_score)') - defeats.sum('ABS(team_home_score - team_away_score)')
+  end
+
+  private
+
+  def victories
+    team.victories.where(group: group)
+  end
+
+  def defeats
+    team.defeats.where(group: group)
+  end
+
+  def draws
+    team.draws.where(group: group)
   end
 end
