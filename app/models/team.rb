@@ -9,4 +9,26 @@ class Team < ApplicationRecord
     # teams can either be home or away
     Match.where('team_home_id = :id OR team_away_id = :id', id: id)
   end
+
+  # These methods are not used for Group rankings, but could be used for individual team stats
+  def victories
+    matches.finished.where(<<-SQL, id: id)
+      (team_home_id = :id AND team_home_score > team_away_score) OR
+      (team_away_id = :id AND team_home_score < team_away_score)
+    SQL
+  end
+
+  def defeats
+    matches.finished.where(<<-SQL, id: id)
+      (team_home_id = :id AND team_home_score < team_away_score) OR
+      (team_away_id = :id AND team_home_score > team_away_score)
+    SQL
+  end
+
+  def draws
+    matches.finished.where(<<-SQL, id: id)
+      (team_home_id = :id OR team_away_id = :id) AND
+      team_home_score = team_away_score
+    SQL
+  end
 end

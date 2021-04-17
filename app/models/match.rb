@@ -8,9 +8,9 @@ class Match < ApplicationRecord
   has_many :users, through: :predictions
   validates :kickoff_time, presence: true
   validates :status, presence: true
-  enum status: %i[upcoming started finished]
-  validates_uniqueness_of :kickoff_time, scope: [:team_home, :team_away]
+  validates_uniqueness_of :kickoff_time, scope: %i[team_home team_away]
   validate :round_xor_group
+  enum status: { upcoming: 'upcoming', started: 'started', finished: 'finished' }, _default: :upcoming
 
   def draw?
     return unless finished?
