@@ -5,6 +5,7 @@ class V1::PredictionsController < ApplicationController
     @predition = Predicition.new(prediction_params)
     @prediction.match = @match
     @prediction.user = current_user
+    authorize @prediction
     if @prediction.save
       render :show, status: :created
     else
@@ -14,6 +15,7 @@ class V1::PredictionsController < ApplicationController
 
   def update
     @predition = Predicition.find_by(user: current_user, match: params[:match_id])
+    authorize @prediction
     if @prediction.update(prediction_params)
       render :show
     else
