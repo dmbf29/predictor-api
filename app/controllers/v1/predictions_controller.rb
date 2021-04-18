@@ -2,7 +2,7 @@ class V1::PredictionsController < ApplicationController
 
   def create
     @match = Match.find(params[:match_id])
-    @predition = Predicition.new(prediction_params)
+    @predition = Prediction.new(prediction_params)
     @prediction.match = @match
     @prediction.user = current_user
     authorize @prediction
@@ -14,7 +14,7 @@ class V1::PredictionsController < ApplicationController
   end
 
   def update
-    @predition = Predicition.find_by(user: current_user, match: params[:match_id])
+    @predition = Prediction.find_by(user: current_user, match: params[:match_id])
     authorize @prediction
     if @prediction.update(prediction_params)
       render :show
