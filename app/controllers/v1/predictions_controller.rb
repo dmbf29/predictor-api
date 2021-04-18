@@ -2,7 +2,7 @@ class V1::PredictionsController < ApplicationController
 
   def create
     @match = Match.find(params[:match_id])
-    @predition = Prediction.new(prediction_params)
+    @prediction = Prediction.new(prediction_params)
     @prediction.match = @match
     @prediction.user = current_user
     authorize @prediction
