@@ -14,7 +14,7 @@ class V1::PredictionsController < ApplicationController
   end
 
   def update
-    @predition = Prediction.find_by(user: current_user, match: params[:match_id])
+    @prediction = Prediction.find_by(user: current_user, match: params[:match_id])
     authorize @prediction
     if @prediction.update(prediction_params)
       render :show
