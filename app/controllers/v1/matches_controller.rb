@@ -6,9 +6,9 @@ class V1::MatchesController < ApplicationController
     @competition = Competition.find_by(id: params[:competition_id])
     @matches =
       if @competition
-        policy_scope(Match).where(group: @competition.groups)
+        policy_scope(Match).where(group: @competition.groups).order(:kickoff_time)
       else
-        policy_scope([:user, Match])
+        policy_scope([:user, Match]).order(:kickoff_time)
       end
   end
 end
