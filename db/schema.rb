@@ -101,11 +101,11 @@ ActiveRecord::Schema.define(version: 2021_04_21_110232) do
   end
 
   create_table "memberships", force: :cascade do |t|
-    t.bigint "league_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["league_id"], name: "index_memberships_on_league_id"
+    t.bigint "leaderboard_id"
+    t.index ["leaderboard_id"], name: "index_memberships_on_leaderboard_id"
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
@@ -178,7 +178,7 @@ ActiveRecord::Schema.define(version: 2021_04_21_110232) do
   add_foreign_key "matches", "rounds"
   add_foreign_key "matches", "teams", column: "team_away_id"
   add_foreign_key "matches", "teams", column: "team_home_id"
-  add_foreign_key "memberships", "leaderboards", column: "league_id"
+  add_foreign_key "memberships", "leaderboards"
   add_foreign_key "memberships", "users"
   add_foreign_key "predictions", "matches"
   add_foreign_key "predictions", "users"

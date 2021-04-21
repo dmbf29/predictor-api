@@ -85,16 +85,16 @@ Team.find_each do |team|
   puts team.badge.attached? ? 'Success' : 'Failed'
 end
 
-puts 'Creating a test league w/ James as creator'
-league = League.find_or_create_by!(
-  name: 'Admin League',
+puts 'Creating a test leaderboard w/ James as creator'
+leaderboard = Leaderboard.find_or_create_by!(
+  name: 'Admin Leaderboard',
   competition: euros,
   user: james
 )
 
-puts 'Adding Trouni and Doug to the league'
+puts 'Adding Trouni and Doug to the leaderboard'
 [trouni, doug].each do |user|
-  Membership.find_or_create_by!(league: league, user: user)
+  Membership.find_or_create_by!(leaderboard: leaderboard, user: user)
 end
 
 ScrapeMatchesService.new.call
