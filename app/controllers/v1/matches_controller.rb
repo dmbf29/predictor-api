@@ -8,7 +8,7 @@ class V1::MatchesController < ApplicationController
       if @competition
         policy_scope(Match).where(group: @competition.groups)
       else
-        policy_scope(Match)
+        policy_scope([:user, Match])
       end
   end
 end
