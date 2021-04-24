@@ -10,14 +10,7 @@ class ApplicationController < ActionController::API
   rescue_from Pundit::NotAuthorizedError,   with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
-  # Transforms JSON key names (UpperCamelCase) to lower_snake_case
-  before_action :underscore_params!
-
   private
-
-  def underscore_params!
-    params.deep_transform_keys!(&:underscore)
-  end
 
   def user_not_authorized(exception)
     render json: {
