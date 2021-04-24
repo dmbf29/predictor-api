@@ -10,7 +10,14 @@ class ApplicationController < ActionController::API
   rescue_from Pundit::NotAuthorizedError,   with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
+  # Allows JSON compliant key names in the front-end and Ruby compliant key names in the back-end
+  before_action :underscore_params!
+
   private
+
+  def underscore_params!
+    params.deep_transform_keys!(&:underscore)
+  end
 
   def user_not_authorized(exception)
     render json: {
