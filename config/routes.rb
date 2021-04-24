@@ -4,13 +4,13 @@ Rails.application.routes.draw do
   }
   namespace :v1 do
     resources :competitions, only: [:show] do
-      resources :leagues, only: [:index, :create]
+      resources :leaderboards, only: [:index, :create]
     end
     resources :matches, only: [:index], shallow: true do
       resources :predictions, only: [:create]
       patch :predictions, to: 'predictions#update', as: :prediction
     end
-    resources :leagues, only: [:destroy], shallow: true do
+    resources :leaderboards, only: [:destroy], shallow: true do
       resources :memberships, only: [:create, :destroy]
     end
     resources :users, only: [:show]

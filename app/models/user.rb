@@ -5,12 +5,13 @@ class User < ApplicationRecord
     :omniauthable # :confirmable
   include DeviseTokenAuth::Concerns::User
   has_many :memberships, dependent: :destroy
-  has_many :competitions, through: :leagues
+  # TODO: Fix this
+  # has_many :competitions, through: :leaderboards
   has_many :predictions, dependent: :destroy
   has_many :matches, through: :predictions
 
-  def leagues
-    # this includes creator or league and members
-    League.includes(:memberships).where(memberships: { user: self }).or(League.where(user: self))
+  def leaderboards
+    # this includes creator or leaderboard and members
+    Leaderboard.includes(:memberships).where(memberships: { user: self }).or(Leaderboard.where(user: self))
   end
 end

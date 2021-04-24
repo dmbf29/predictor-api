@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_16_124931) do
+ActiveRecord::Schema.define(version: 2021_04_21_110232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,15 +70,15 @@ ActiveRecord::Schema.define(version: 2021_04_16_124931) do
     t.index ["round_id"], name: "index_groups_on_round_id"
   end
 
-  create_table "leagues", force: :cascade do |t|
+  create_table "leaderboards", force: :cascade do |t|
     t.string "name"
     t.string "password"
     t.bigint "user_id", null: false
     t.bigint "competition_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["competition_id"], name: "index_leagues_on_competition_id"
-    t.index ["user_id"], name: "index_leagues_on_user_id"
+    t.index ["competition_id"], name: "index_leaderboards_on_competition_id"
+    t.index ["user_id"], name: "index_leaderboards_on_user_id"
   end
 
   create_table "matches", force: :cascade do |t|
@@ -101,11 +101,11 @@ ActiveRecord::Schema.define(version: 2021_04_16_124931) do
   end
 
   create_table "memberships", force: :cascade do |t|
-    t.bigint "league_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["league_id"], name: "index_memberships_on_league_id"
+    t.bigint "leaderboard_id"
+    t.index ["leaderboard_id"], name: "index_memberships_on_leaderboard_id"
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
@@ -171,14 +171,14 @@ ActiveRecord::Schema.define(version: 2021_04_16_124931) do
   add_foreign_key "affiliations", "teams"
   add_foreign_key "competitions", "rounds", column: "current_round_id"
   add_foreign_key "groups", "rounds"
-  add_foreign_key "leagues", "competitions"
-  add_foreign_key "leagues", "users"
+  add_foreign_key "leaderboards", "competitions"
+  add_foreign_key "leaderboards", "users"
   add_foreign_key "matches", "groups"
   add_foreign_key "matches", "matches", column: "next_match_id"
   add_foreign_key "matches", "rounds"
   add_foreign_key "matches", "teams", column: "team_away_id"
   add_foreign_key "matches", "teams", column: "team_home_id"
-  add_foreign_key "memberships", "leagues"
+  add_foreign_key "memberships", "leaderboards"
   add_foreign_key "memberships", "users"
   add_foreign_key "predictions", "matches"
   add_foreign_key "predictions", "users"
