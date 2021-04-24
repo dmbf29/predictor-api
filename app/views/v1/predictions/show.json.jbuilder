@@ -1,2 +1,1 @@
-json.extract! @prediction, :id, :choice, :match_id, :user_id
-
+json.partial! @prediction, partial: 'predictions/prediction', as: :prediction
