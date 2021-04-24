@@ -6,4 +6,5 @@ class Leaderboard < ApplicationRecord
   validates :name, presence: true
   # TODO: Think about how users join groups
   # validates :password, presence: true
+  has_secure_token :password
 end
