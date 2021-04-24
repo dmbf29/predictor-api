@@ -1,1 +1,1 @@
-json.partial! @prediction, partial: 'predictions/prediction', as: :prediction
+json.partial! @prediction
