@@ -1,10 +1,10 @@
 class V1::LeaderboardsController < ApplicationController
 
   def create
-    @match = Match.find(params[:match_id])
-    @prediction = Prediction.new(prediction_params)
-    @prediction.match = @match
-    @prediction.user = current_user
+    @competition = Competition.find(params[:competition_id])
+    @leaderboard = Leaderboard.new(leaderboard_params)
+    @leaderboard.competition = @competition
+    @leaderboard.user = current_user
     authorize @prediction
     if @leaderboard.save
       render :show, status: :created
@@ -16,7 +16,7 @@ class V1::LeaderboardsController < ApplicationController
   private
 
   def leaderboard_params
-    params.require(:leaderboard).permit(:)
+    params.require(:leaderboard).permit(:name)
   end
 
 end
