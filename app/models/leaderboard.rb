@@ -1,4 +1,4 @@
-class League < ApplicationRecord
+class Leaderboard < ApplicationRecord
   belongs_to :user
   belongs_to :competition
   has_many :memberships, dependent: :destroy
