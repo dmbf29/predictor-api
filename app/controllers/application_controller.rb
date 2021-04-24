@@ -29,4 +29,9 @@ class ApplicationController < ActionController::API
   def token_auth_controller?
     params[:controller].split('/').include? 'devise_token_auth'
   end
+
+  def render_error(resource)
+    render json: { errors: resource.errors.full_messages },
+      status: :unprocessable_entity
+  end
 end
