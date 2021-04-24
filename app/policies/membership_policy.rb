@@ -4,4 +4,8 @@ class MembershipPolicy < ApplicationPolicy
       scope.all
     end
   end
+
+  def create?
+    record.leaderboard.user != user
+  end
 end
