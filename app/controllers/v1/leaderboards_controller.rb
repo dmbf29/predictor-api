@@ -5,7 +5,7 @@ class V1::LeaderboardsController < ApplicationController
     @leaderboard = Leaderboard.new(leaderboard_params)
     @leaderboard.competition = @competition
     @leaderboard.user = current_user
-    authorize @prediction
+    authorize @leaderboard
     if @leaderboard.save
       render :show, status: :created
     else
