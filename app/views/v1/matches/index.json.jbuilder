@@ -8,9 +8,5 @@ json.array! @matches do |match|
     json.partial! match.team_away
     json.score match.team_away_score if match.team_away_score
   end
-  if match.predictions.any?
-    json.prediction do
-      json.partial! match.predictions.first
-    end
-  end
+  json.prediction { json.partial! match.predictions.first } if match.predictions.any?
 end
