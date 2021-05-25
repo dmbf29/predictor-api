@@ -10,8 +10,18 @@ class User < ApplicationRecord
   has_many :predictions, dependent: :destroy
   has_many :matches, through: :predictions
 
-  def leaderboards
+  def leaderboards(competition = nil)
     # this includes creator or leaderboard and members
-    Leaderboard.includes(:memberships).where(memberships: { user: self }).or(Leaderboard.where(user: self))
+    if competition
+      Leaderboard.includes(:memberships).where(
+        competition: competition,
+        memberships: { user: self }
+      ).or(Leaderboard.where(
+             user: self,
+             competition: competition
+           ))
+    else
+      Leaderboard.includes(:memberships).where(memberships: { user: self }).or(Leaderboard.where(user: self))
+    end
   end
 end
