@@ -2,7 +2,7 @@ class V1::LeaderboardsController < ApplicationController
 
   def index
     @competition = Competition.find(params[:competition_id])
-    @leaderboards = current_user.leaderboards
+    @leaderboards = current_user.leaderboards(@competition)
   end
 
   def create
