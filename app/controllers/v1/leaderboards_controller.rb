@@ -13,6 +13,12 @@ class V1::LeaderboardsController < ApplicationController
     end
   end
 
+  def destroy
+    @leaderboard = Leaderboard.find(params[:id])
+    @leaderboard.destroy
+    head :no_content
+  end
+
   private
 
   def leaderboard_params
