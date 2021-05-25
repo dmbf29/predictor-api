@@ -15,6 +15,7 @@ class V1::LeaderboardsController < ApplicationController
 
   def destroy
     @leaderboard = Leaderboard.find(params[:id])
+    authorize @leaderboard
     @leaderboard.destroy
     head :no_content
   end
