@@ -11,7 +11,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       # Local server
       %r{\Ahttps?://localhost:\d{4}},
       # Netlify app and preview deploys
-      %r{\Ahttps?://(.+--)?soccer-predictor.\.netlify\.app}
+      %r{\Ahttps?://(.+--)?soccer-predictor\.netlify\.app}
       # TODO: Add production domain url:
       # %r(\Ahttps?:\/\/.+\.app-name\.com),
     ]
