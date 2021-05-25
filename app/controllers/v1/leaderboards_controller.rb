@@ -2,7 +2,8 @@ class V1::LeaderboardsController < ApplicationController
 
   def index
     @competition = Competition.find(params[:competition_id])
-    @leaderboards = current_user.leaderboards(@competition)
+    # @leaderboards = current_user.leaderboards(@competition)
+    @leaderboards = policy_scope(Leaderboard).where(competition: @competition)
   end
 
   def create
