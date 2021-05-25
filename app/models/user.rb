@@ -24,4 +24,8 @@ class User < ApplicationRecord
       Leaderboard.includes(:memberships).where(memberships: { user: self }).or(Leaderboard.where(user: self))
     end
   end
+
+  def display_name
+    name || email
+  end
 end

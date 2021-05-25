@@ -2,6 +2,7 @@ json.array! @leaderboards do |leaderboard|
   json.partial! leaderboard
   json.users leaderboard.users do |user|
     json.user_id user.id
+    json.name user.display_name
     json.points user.predictions.count(&:correct?) * 3
   end
 end
