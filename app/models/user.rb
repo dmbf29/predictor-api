@@ -28,4 +28,10 @@ class User < ApplicationRecord
   def display_name
     name || email
   end
+
+  def score(competition)
+    # TODO: user predictions should be scoped by competition => prediction -> match -> group -> round -> competition
+    # predictions.where(competition: competition).count(&:correct?) * 3
+    predictions.count(&:correct?) * 3
+  end
 end
