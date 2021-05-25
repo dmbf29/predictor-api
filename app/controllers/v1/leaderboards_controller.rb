@@ -1,5 +1,10 @@
 class V1::LeaderboardsController < ApplicationController
 
+  def index
+    @competition = Competition.find(params[:competition_id])
+    @leaderboards = current_user.leaderboards
+  end
+
   def create
     @competition = Competition.find(params[:competition_id])
     @leaderboard = Leaderboard.new(leaderboard_params)
