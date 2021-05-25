@@ -3,9 +3,8 @@ json.array! @leaderboards do |leaderboard|
   json.users leaderboard.users do |user|
     json.user_id user.id
     json.name user.display_name
-    json.points user.predictions.count(&:correct?) * 3
+    json.points user.score(leaderboard.competition)
   end
 end
 
 # TODO: add 🔼 or 🔽
-# TODO: user predictions should be scoped by competition
