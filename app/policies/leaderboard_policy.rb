@@ -1,7 +1,7 @@
 class LeaderboardPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      scope.all
+      user.leaderboards
     end
   end
 

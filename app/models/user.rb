@@ -10,8 +10,20 @@ class User < ApplicationRecord
   has_many :predictions, dependent: :destroy
   has_many :matches, through: :predictions
 
-  def leaderboards
+  def leaderboards(competition = nil)
     # this includes creator or leaderboard and members
-    Leaderboard.includes(:memberships).where(memberships: { user: self }).or(Leaderboard.where(user: self))
+    leaderboards = Leaderboard.includes(:memberships).where(memberships: { user: self }).or(Leaderboard.where(user: self))
+    leaderboards = leaderboards.where(competition: competition) if competition
+    leaderboards
+  end
+
+  def display_name
+    name || email
+  end
+
+  def score(competition)
+    # TODO: user predictions should be scoped by competition => prediction -> match -> group -> round -> competition
+    # predictions.where(competition: competition).count(&:correct?) * 3
+    predictions.count(&:correct?) * 3
   end
 end
