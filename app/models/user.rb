@@ -12,17 +12,9 @@ class User < ApplicationRecord
 
   def leaderboards(competition = nil)
     # this includes creator or leaderboard and members
-    if competition
-      Leaderboard.includes(:memberships).where(
-        competition: competition,
-        memberships: { user: self }
-      ).or(Leaderboard.where(
-             user: self,
-             competition: competition
-           ))
-    else
-      Leaderboard.includes(:memberships).where(memberships: { user: self }).or(Leaderboard.where(user: self))
-    end
+    leaderboards = Leaderboard.includes(:memberships).where(memberships: { user: self }).or(Leaderboard.where(user: self))
+    leaderboards = leaderboards.where(competition: competition) if competition
+    leaderboards
   end
 
   def display_name
