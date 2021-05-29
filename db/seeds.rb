@@ -98,7 +98,6 @@ puts 'Creating test users...'
   Leaderboard.create!(
     # fake emails for testing purposes
     name: Faker::Sports::Football.team,
-    password: '123123',
     competition: euros,
     user: trouni
   )
@@ -112,7 +111,7 @@ Leaderboard.find_each do |ldbrd|
   end
 end
 
-# ScrapeMatchesService.new.call
+ScrapeMatchesService.new.call
 
 puts 'Assigning random scores to matches before June 22nd'
 Match.where('kickoff_time < ?', Date.new(2021, 6, 22)).each do |match|
