@@ -5,7 +5,7 @@ class Competition < ApplicationRecord
   has_many :affiliations, through: :groups
   has_many :teams, through: :affiliations
   has_many :leaderboards, dependent: :destroy
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { scope: :start_date}
   validates :start_date, presence: true
   validates :end_date, presence: true
 end
