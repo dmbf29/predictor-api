@@ -1,4 +1,5 @@
 require 'open-uri'
+Leaderboard.destroy_all
 
 puts 'Getting Admin users...'
 doug = User.find_by(email: 'douglasmberkley@gmail.com') || User.create(email: 'douglasmberkley@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
@@ -92,8 +93,8 @@ leaderboard = Leaderboard.find_or_create_by!(
   user: james
 )
 
-puts 'Adding Trouni and Doug to the leaderboard'
-[trouni, doug].each do |user|
+puts 'Adding Users to the leaderboard'
+([doug, trouni] + User.all.take(20)).each do |user|
   Membership.find_or_create_by!(leaderboard: leaderboard, user: user)
 end
 
