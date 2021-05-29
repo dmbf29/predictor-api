@@ -90,12 +90,25 @@ puts 'Creating a test leaderboard w/ James as creator'
 leaderboard = Leaderboard.find_or_create_by!(
   name: 'Admin Leaderboard',
   competition: euros,
-  user: james
+  user: trouni
 )
 
+puts 'Creating test users...'
+5.times do
+  Leaderboard.create!(
+    # fake emails for testing purposes
+    name: Faker::Sports::Football.team,
+    competition: euros,
+    user: trouni
+  )
+end
+puts "... #{User.count} Total Users"
+
 puts 'Adding Users to the leaderboard'
-([doug, trouni] + User.all.take(20)).each do |user|
-  Membership.find_or_create_by!(leaderboard: leaderboard, user: user)
+Leaderboard.find_each do |ldbrd|
+  ([doug] + User.last(20)).each do |user|
+    Membership.find_or_create_by!(leaderboard: ldbrd, user: user)
+  end
 end
 
 ScrapeMatchesService.new.call
