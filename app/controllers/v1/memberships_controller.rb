@@ -6,7 +6,7 @@ class V1::MembershipsController < ApplicationController
     @membership.user = current_user
     authorize @membership
     if @membership.save
-      render 'v1/leaderboards/show', status: :created
+      render :show, status: :created
     else
       render_error(@membership)
     end
