@@ -4,7 +4,9 @@ class Leaderboard < ApplicationRecord
   has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
   validates :name, presence: true
-  # TODO: Think about how users join groups
-  # validates :password, presence: true
   has_secure_token :password
+
+  def users
+    super().or(User.where(id: user))
+  end
 end
