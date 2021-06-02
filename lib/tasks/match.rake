@@ -1,6 +1,7 @@
 namespace :match do
   desc "Checks for matches in the past and randomly assigns a score"
   task add_fake_results: :environment do
+    # TODO: Turn off before Friday
     completed_matches = Match.where('kickoff_time < :date', date: DateTime.now)
     completed_matches.each do |match|
       next if match.finished?
