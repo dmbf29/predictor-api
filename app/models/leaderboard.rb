@@ -7,6 +7,6 @@ class Leaderboard < ApplicationRecord
   has_secure_token :password
 
   def users
-    super().or(User.where(id: user))
+    User.includes(:memberships).where(memberships: { leaderboard: self }).or(User.where(id: user))
   end
 end
