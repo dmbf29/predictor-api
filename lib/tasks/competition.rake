@@ -63,11 +63,13 @@ namespace :competition do
 
     euros.matches.each do |match|
       new_match = match.dup
-      new_match.group = euros_test.find_by(name: match.group.name)
+      new_match.group = euros_test.groups.find_by(name: match.group.name)
       new_match.kickoff_time = match.kickoff_time - 9.days
+      new_match.team_home_score = nil
+      new_match.team_away_score = nil
+      new_match.status = "upcoming"
       new_match.save
     end
-
   end
 
 end
