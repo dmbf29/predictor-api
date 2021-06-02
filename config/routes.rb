@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: 'auth', controllers: {
     sessions: 'auth/devise_token_auth/sessions'
   }
+  require "sidekiq/web"
+  authenticate :user, ->(user) { user.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
   namespace :v1, defaults: { format: :json } do
     resources :competitions, only: [:show] do
       resources :leaderboards, only: [:index, :create]
