@@ -4,6 +4,7 @@ class Team < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :abbrev, presence: true, uniqueness: true
   has_one_attached :badge
+  has_one_attached :flag
 
   def matches
     # teams can either be home or away
