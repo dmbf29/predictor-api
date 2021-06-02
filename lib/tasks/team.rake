@@ -20,7 +20,7 @@ namespace :team do
       end
     end
 
-    puts "Teams not found: #{not_found.join(', ')}"
+    puts not_found.any? ? "Teams not found: #{not_found.join(', ')}" : 'Found all teams'
   end
 
   def scrape_flag(team)
