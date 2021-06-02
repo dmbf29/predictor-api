@@ -33,6 +33,8 @@ gem 'faker'
 gem 'httparty'
 gem 'omniauth'
 gem 'pundit'
+gem 'sidekiq'
+gem 'sidekiq-failures', '~> 1.0'
 gem 'watir', '6.16.5'
 gem 'webdrivers'
 
