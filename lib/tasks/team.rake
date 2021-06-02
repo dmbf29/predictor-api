@@ -9,7 +9,7 @@ namespace :team do
     Team.find_each do |team|
       country = countries.find { |country| country['name'] == team.name }
       if country
-        team.api_id = country['id']
+        team.api_id = country['national_team']['id']
         team.save
 
         next if team.flag.attached?
