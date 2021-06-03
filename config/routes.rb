@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
   namespace :v1, defaults: { format: :json } do
-    resources :competitions, only: [:show] do
+    resources :competitions, only: [:index] do
       resources :leaderboards, only: [:index, :create]
     end
     resources :matches, only: [:index], shallow: true do
