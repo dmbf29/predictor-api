@@ -1,9 +1,7 @@
 class V1::MembershipsController < ApplicationController
   def create
     @leaderboard = Leaderboard.find_by(password: params[:password])
-    @membership = Membership.new
-    @membership.leaderboard = @leaderboard
-    @membership.user = current_user
+    @membership = Membership.find_or_initialize_by(user: current_user, leaderboard: @leaderboard)
     authorize @membership
     if @membership.save
       render :show, status: :created
