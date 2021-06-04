@@ -9,6 +9,7 @@ class User < ApplicationRecord
   # has_many :competitions, through: :leaderboards
   has_many :predictions, dependent: :destroy
   has_many :matches, through: :predictions
+  has_one_attached :photo
 
   def leaderboards(competition = nil)
     # this includes creator or leaderboard and members
