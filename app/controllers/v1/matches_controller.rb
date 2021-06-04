@@ -9,6 +9,7 @@ class V1::MatchesController < ApplicationController
                            .left_outer_joins(:predictions)
                            .includes(:team_away, :team_home, :predictions)
                            .where(group: @competition.groups)
+                           .order(:kickoff_time)
 
         # TODO: Rewrite the query to avoid iterating over each match to get the predictions
 
