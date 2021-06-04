@@ -5,11 +5,7 @@ class V1::UsersController < ApplicationController
     @user = current_user
     authorize @user
 
-    if params[:user][:photo_url]
-      file = URI.open(params[:user][:photo_url])
-      @user.photo.attach(io: file, filename: 'profile.png', content_type: 'image/png')
-      render :show
-    elsif @user.update(prediction_params)
+    if @user.update(prediction_params)
       render :show
     else
       render_error(@user)
@@ -19,6 +15,6 @@ class V1::UsersController < ApplicationController
   private
 
   def prediction_params
-    params.require(:user).permit(:name, :timezone)
+    params.require(:user).permit(:name, :timezone, :photo_url)
   end
 end
