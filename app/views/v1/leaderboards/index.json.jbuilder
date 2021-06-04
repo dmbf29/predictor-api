@@ -4,6 +4,7 @@ json.array! @leaderboards do |leaderboard|
     json.user_id user.id
     json.name user.display_name
     json.points user.score(leaderboard.competition)
+    json.photo_key user.photo.key if user.photo.attached?
   end
 end
 
