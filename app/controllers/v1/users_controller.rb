@@ -15,6 +15,6 @@ class V1::UsersController < ApplicationController
   private
 
   def prediction_params
-    params.require(:user).permit(:name, :timezone, :photo_url)
+    params.require(:user).permit(:name, :timezone, :photo_key)
   end
 end
