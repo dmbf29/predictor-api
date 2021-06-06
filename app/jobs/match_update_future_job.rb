@@ -5,7 +5,7 @@ class MatchUpdateFutureJob < ApplicationJob
     competition = Competition.find(competition_id)
     url_to_update = "https://livescore-api.com/api-client/fixtures/matches.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition.api_id}"
     while url_to_update
-      url_to_update = update_matches(url_to_update)
+      url_to_update = update_matches_future(url_to_update)
     end
   end
 
@@ -13,7 +13,7 @@ class MatchUpdateFutureJob < ApplicationJob
     Team.find_by(api_id: id)
   end
 
-  def update_matches(url)
+  def update_matches_future(url)
     response = HTTParty.get(url).body
     parsed_response = JSON.parse(response)['data']
     matches = parsed_response['fixtures']
