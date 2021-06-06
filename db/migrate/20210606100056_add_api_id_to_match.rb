@@ -3,7 +3,7 @@ class AddApiIdToMatch < ActiveRecord::Migration[6.1]
     add_column :matches, :api_id, :integer
     add_column :matches, :location, :string
     Competition.find_each do |competition|
-      MatchUpdateJob.perform_now(competition.id)
+      MatchUpdateFutureJob.perform_now(competition.id)
     end
   end
 end
