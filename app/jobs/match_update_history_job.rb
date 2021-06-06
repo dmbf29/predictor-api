@@ -21,14 +21,14 @@ class MatchUpdateHistoryJob < ApplicationJob
       kickoff_time = DateTime.parse("#{match_info['date']} #{match_info['time']}")
       puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']} (#{kickoff_time})"
       match = Match.find_by(api_id: match_info['id']) || Match.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']), kickoff_time: kickoff_time)
-      next unless match # knock-out rounds with no teams
+      next unless match
 
       match.finished!
-      p scores = match_info['score'].split(' - ')
-      match.team_home_score = scores.first
-      match.team_away_score = scores.second
+      scores = match_info['score'].split(' - ')
+      match.team_home_score = scores&.first
+      match.team_away_score = scores&.second
       match.save
-      puts 'Match Update'
+      puts "Match Update: #{match_info['score']}"
     end
     return parsed_response['next_page']
   end
