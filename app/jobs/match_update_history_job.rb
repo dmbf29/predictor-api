@@ -18,14 +18,15 @@ class MatchUpdateHistoryJob < ApplicationJob
     parsed_response = JSON.parse(response)['data']
     matches = parsed_response['match']
     matches.each do |match_info|
-      puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']}"
-      match = Match.find_by(id: match_info['id']) || Match.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']))
+      kickoff_time = DateTime.parse("#{match_info['date']} #{match_info['time']}")
+      puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']} (#{kickoff_time})"
+      match = Match.find_by(api_id: match_info['id']) || Match.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']), kickoff_time: kickoff_time)
       next unless match # knock-out rounds with no teams
 
       match.finished!
       p scores = match_info['score'].split(' - ')
       match.team_home_score = scores.first
-      match.team_away_score = score.second
+      match.team_away_score = scores.second
       match.save
       puts 'Match Update'
     end
