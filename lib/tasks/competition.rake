@@ -1,14 +1,23 @@
 namespace :competition do
+  desc "Update upcoming fixtures for on-going competitions"
+  task update_ongoing_matches: :environment do
+    competitions = Competition.on_going
+    competitions.each do |competition|
+      MatchUpdateFutureJob.perform_later(competition.id)
+      MatchUpdateHistoryJob.perform_later(competition.id)
+    end
+  end
+
   desc "Update upcoming fixtures for a competition"
   task :update_matches_future, [:competition_id] => :environment do |t, args|
     competition = Competition.find(args[:competition_id])
-    MatchUpdateFutureJob.perform_now(competition.id)
+    MatchUpdateFutureJob.perform_later(competition.id)
   end
 
   desc "Update upcoming fixtures for a competition"
   task :update_matches_history, [:competition_id] => :environment do |t, args|
     competition = Competition.find(args[:competition_id])
-    MatchUpdateHistoryJob.perform_now(competition.id)
+    MatchUpdateHistoryJob.perform_later(competition.id)
   end
 
   desc "Copy the first competition and start it today"
