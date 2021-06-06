@@ -1,15 +1,34 @@
 class MatchUpdateHistoryJob < ApplicationJob
   queue_as :default
 
-  def perform
-    competitions = Competition.on_going
-    competitions.each do |competition|
-      response = HTTParty.get("http://livescore-api.com/api-client/scores/history.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition.api_id}").body
-      matches = JSON.parse(response)['data']['match']
-      matches.each do |match_info|
-        match = Match.find_by(api_id: match_info['id'])
-        puts
-      end
+  def perform(competition_id)
+    competition = Competition.find(competition_id)
+    url_to_update = "http://livescore-api.com/api-client/scores/history.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition.api_id}"
+    while url_to_update
+      url_to_update = update_matches_history(url_to_update)
     end
+  end
+
+  def get_team(id)
+    Team.find_by(api_id: id)
+  end
+
+  def update_matches_history(url)
+    response = HTTParty.get(url).body
+    parsed_response = JSON.parse(response)['data']
+    matches = parsed_response['match']
+    matches.each do |match_info|
+      puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']}"
+      match = Match.find_by(id: match_info['id']) || Match.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']))
+      next unless match # knock-out rounds with no teams
+
+      match.finished!
+      p scores = match_info['score'].split(' - ')
+      match.team_home_score = scores.first
+      match.team_away_score = score.second
+      match.save
+      puts 'Match Update'
+    end
+    return parsed_response['next_page']
   end
 end
