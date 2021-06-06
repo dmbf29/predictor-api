@@ -9,12 +9,8 @@ class MatchUpdateJob < ApplicationJob
     end
   end
 
-  def get_home_team(match_info)
-    Team.find_by(name: match_info['home_name'])
-  end
-
-  def get_away_team(match_info)
-    Team.find_by(name: match_info['away_name'])
+  def get_team(id)
+    Team.find_by(api_id: id)
   end
 
   def update_matches(url)
@@ -22,14 +18,15 @@ class MatchUpdateJob < ApplicationJob
     parsed_response = JSON.parse(response)['data']
     matches = parsed_response['fixtures']
     matches.each do |match_info|
-      puts "Updating the matches between : #{match_info['home_name']} v #{match_info['away_name']}"
-      match = Match.find_by(id: match_info['id']) || Match.find_by(team_home: get_home_team(match_info), team_away: get_away_team(match_info))
+      puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']}"
+      match = Match.find_by(id: match_info['id']) || Match.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']))
       next unless match # knock-out rounds with no teams
 
       match.api_id = match_info['id']
       match.location = match_info['location']
       match.kickoff_time = DateTime.parse("#{match_info['date']} #{match_info['time']}")
       match.save
+      puts 'Match Update'
     end
     return parsed_response['next_page']
   end
