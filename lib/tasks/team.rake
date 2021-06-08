@@ -30,4 +30,11 @@ namespace :team do
     team.flag.attach(io: file, filename: 'flag.png', content_type: 'image/png')
     puts team.flag.attached? ? 'Success' : 'Failed'
   end
+
+  desc "Changes North Macedonia to FYR Macedonia"
+  task update_macedonia: :environment do
+    team = Team.find_by(name: 'North Macedonia')
+    team.name = 'FYR Macedonia' if team
+    team.save
+  end
 end
