@@ -32,7 +32,7 @@ groups = {
   'Group C' => [
     { name: 'Austria', abbrev: 'AUT' },
     { name: 'Netherlands', abbrev: 'NED' },
-    { name: 'North Macedonia', abbrev: 'MKD' },
+    { name: 'FYR Macedonia', abbrev: 'MKD' },
     { name: 'Ukraine', abbrev: 'UKR' }
   ],
   'Group D' => [
