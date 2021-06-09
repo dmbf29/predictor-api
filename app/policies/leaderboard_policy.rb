@@ -10,6 +10,6 @@ class LeaderboardPolicy < ApplicationPolicy
   end
 
   def destroy?
-    record.user == user
+    record.user == user || record.memberships.find_by(user: user)
   end
 end
