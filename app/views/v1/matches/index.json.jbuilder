@@ -8,6 +8,6 @@ json.array! @matches do |match|
     json.partial! match.team_away
     json.score match.team_away_score if match.finished?
   end
-  user_prediction = match.predictions.find_by(user: @user)
+  user_prediction = @predictions.where(match: match).find_by(user: @user)
   json.prediction { json.partial! user_prediction } if user_prediction
 end
