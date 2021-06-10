@@ -3,6 +3,7 @@ class V1::MatchesController < ApplicationController
   def index
     @user = User.find_by(id: params[:user_id]) || current_user
     @competition = Competition.find_by(id: params[:competition_id])
+    @predictions = policy_scope(Prediction)
     @matches =
       if @competition
         policy_scope(Match).joins(:team_away, :team_home)

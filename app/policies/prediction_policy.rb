@@ -1,7 +1,9 @@
 class PredictionPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      scope.all
+      scope.joins(:match).where(user: user).or(
+        scope.joins(:match).where.not(user: user).where.not(matches: { status: :upcoming })
+      ).distinct
     end
   end
 
