@@ -10,5 +10,5 @@ class Competition < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :start_date}
   validates :start_date, presence: true
   validates :end_date, presence: true
-  scope :on_going, -> { where('start_date < :start AND end_date > :end', start: Date.today - 1, end: Date.today + 1) }
+  scope :on_going, -> { where('start_date < :start AND end_date > :end', start: Date.today + 1, end: Date.today - 1) }
 end
