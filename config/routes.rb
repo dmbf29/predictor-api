@@ -2,10 +2,18 @@ Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: 'auth', controllers: {
     sessions: 'auth/devise_token_auth/sessions'
   }
-  require "sidekiq/web"
-  authenticate :user, ->(user) { user.admin? } do
-    mount Sidekiq::Web => '/sidekiq'
+
+  # Sidekiq Web UI, only for admins.
+  Sidekiq::Web.use(Rack::Auth::Basic) do |username, password|
+    ActiveSupport::SecurityUtils.secure_compare(
+      username, ENV['SIDEKIQ_USERNAME']
+    ) && ActiveSupport::SecurityUtils.secure_compare(
+      password, ENV['SIDEKIQ_PASSWORD']
+    )
   end
+
+  mount Sidekiq::Web => '/sidekiq'
+
   namespace :v1, defaults: { format: :json } do
     resources :competitions, only: [:index] do
       resources :leaderboards, only: [:index, :create]
