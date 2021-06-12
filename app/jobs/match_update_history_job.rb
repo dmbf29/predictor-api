@@ -4,7 +4,6 @@ class MatchUpdateHistoryJob < ApplicationJob
   def perform(competition_id)
     competition = Competition.find(competition_id)
     url_to_update = LiveScoreApi.matches_history_url(competition.api_id)
-
     while url_to_update
       url_to_update = update_matches_history(url_to_update, competition)
     end
