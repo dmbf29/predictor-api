@@ -18,7 +18,7 @@ class User < ApplicationRecord
   end
 
   def display_name
-    name || email
+    name || email.split('@').first
   end
 
   def score(competition)
