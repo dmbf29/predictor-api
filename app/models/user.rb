@@ -36,10 +36,10 @@ class User < ApplicationRecord
     )
     SELECT
       matches.*,
-      team_away.name, team_away.abbrev,
-      team_home.name, team_home.abbrev,
-      predictions.choice,
-      rounds.number, rounds.name
+      team_away.name AS team_away_name, team_away.abbrev AS team_away_abbrev,
+      team_home.name AS team_home_name, team_home.abbrev AS team_home_abbrev,
+      predictions.id AS prediction_id, predictions.choice AS prediction_choice, predictions.user_id AS prediction_user_id, predictions.match_id AS prediction_match_id,
+      rounds.number AS round_number, rounds.name AS round_name
     FROM matches
     LEFT JOIN groups ON matches.group_id = groups.id
     LEFT JOIN rounds ON matches.round_id = rounds.id OR groups.round_id = rounds.id
