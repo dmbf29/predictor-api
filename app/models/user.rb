@@ -33,18 +33,49 @@ class User < ApplicationRecord
       SELECT *
       FROM predictions
       WHERE user_id = :user_id OR user_id IS NULL
+    ), team_badges AS (
+      SELECT teams.id AS team_id, asb.key as key
+      FROM teams
+      INNER JOIN active_storage_attachments asat ON asat.record_id = teams.id
+      JOIN active_storage_blobs asb ON asb.id = asat.blob_id
+      WHERE asat.name = 'badge' AND asat.record_type = 'Team'
+    ), team_flags AS (
+      SELECT teams.id AS team_id, asb.key as key
+      FROM teams
+      INNER JOIN active_storage_attachments asat ON asat.record_id = teams.id
+      JOIN active_storage_blobs asb ON asb.id = asat.blob_id
+      WHERE asat.name = 'flag' AND asat.record_type = 'Team'
+    ), team_with_images AS (
+      SELECT teams.*, team_badges.key AS badge_key, team_flags.key AS flag_key
+      FROM teams
+      LEFT JOIN team_badges ON teams.id = team_badges.team_id
+      LEFT JOIN team_flags ON teams.id = team_flags.team_id
     )
     SELECT
       matches.*,
-      team_away.name AS team_away_name, team_away.abbrev AS team_away_abbrev,
-      team_home.name AS team_home_name, team_home.abbrev AS team_home_abbrev,
-      predictions.id AS prediction_id, predictions.choice AS prediction_choice, predictions.user_id AS prediction_user_id, predictions.match_id AS prediction_match_id,
-      rounds.number AS round_number, rounds.name AS round_name
+      rounds.number AS round_number,
+      rounds.name AS round_name,
+      team_home.name AS team_home_name,
+      team_home.abbrev AS team_home_abbrev,
+      team_home.badge_key AS team_home_badge_key,
+      team_home.flag_key AS team_home_flag_key,
+      team_away.name AS team_away_name,
+      team_away.abbrev AS team_away_abbrev,
+      team_away.badge_key AS team_away_badge_key,
+      team_away.flag_key AS team_away_flag_key,
+      predictions.id AS prediction_id,
+      predictions.user_id AS prediction_user_id,
+      predictions.match_id AS prediction_match_id,
+      CASE
+        WHEN predictions.choice = 0 THEN 'home'
+        WHEN predictions.choice = 1 THEN 'away'
+        ELSE 'draw'
+      END AS prediction_choice
     FROM matches
     LEFT JOIN groups ON matches.group_id = groups.id
     LEFT JOIN rounds ON matches.round_id = rounds.id OR groups.round_id = rounds.id
-    JOIN teams team_away ON matches.team_away_id = team_away.id
-    JOIN teams team_home ON matches.team_home_id = team_home.id
+    JOIN team_with_images team_away ON matches.team_away_id = team_away.id
+    JOIN team_with_images team_home ON matches.team_home_id = team_home.id
     LEFT JOIN predictions ON predictions.match_id = matches.id
     #{'WHERE rounds.competition_id = :competition_id' if competition}
     ORDER BY matches.kickoff_time

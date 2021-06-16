@@ -5,12 +5,16 @@ json.array! @matches do |match|
     json.id match[:team_home_id]
     json.name match[:team_home_name]
     json.abbrev match[:team_home_abbrev]
+    json.badge_key match[:team_home_badge_key]
+    json.flag_key match[:team_home_flag_key]
     json.score match[:team_home_score] if match[:status] == 'finished'
   end
   json.team_away do
     json.id match[:team_away_id]
     json.name match[:team_away_name]
     json.abbrev match[:team_away_abbrev]
+    json.badge_key match[:team_away_badge_key]
+    json.flag_key match[:team_away_flag_key]
     json.score match[:team_away_score] if match[:status] == 'finished'
   end
   if match[:prediction_choice]
