@@ -1,13 +1,24 @@
 json.array! @matches do |match|
-  json.extract! match, :id, :kickoff_time, :status, :group_id, :next_match_id, :round_id
+  match.symbolize_keys!
+  json.merge! match.slice(:id, :kickoff_time, :status, :group_id, :next_match_id, :round_id)
   json.team_home do
-    json.partial! match.team_home
-    json.score match.team_home_score if match.finished?
+    json.id match[:team_home_id]
+    json.name match[:team_home_name]
+    json.abbrev match[:team_home_abbrev]
+    json.score match[:team_home_score] if match[:status] == 'finished'
   end
   json.team_away do
-    json.partial! match.team_away
-    json.score match.team_away_score if match.finished?
+    json.id match[:team_away_id]
+    json.name match[:team_away_name]
+    json.abbrev match[:team_away_abbrev]
+    json.score match[:team_away_score] if match[:status] == 'finished'
   end
-  user_prediction = @predictions.where(match: match).find_by(user: @user)
-  json.prediction { json.partial! user_prediction } if user_prediction
+  if match[:prediction_choice]
+    json.prediction do
+      json.id match[:prediction_id]
+      json.choice match[:prediction_choice]
+      json.user_id match[:prediction_user_id]
+      json.match_id match[:prediction_match_id]
+    end
+  end
 end
