@@ -26,4 +26,29 @@ class User < ApplicationRecord
     # predictions.where(competition: competition).count(&:correct?) * 3
     competition.predictions.where(user: self).count(&:correct?) * 3
   end
+
+  def matches(competition: nil)
+    query = <<-SQL.freeze
+    WITH predictions AS (
+      SELECT *
+      FROM predictions
+      WHERE user_id = :user_id OR user_id IS NULL
+    )
+    SELECT
+      matches.*,
+      team_away.name, team_away.abbrev,
+      team_home.name, team_home.abbrev,
+      predictions.choice,
+      rounds.number, rounds.name
+    FROM matches
+    LEFT JOIN groups ON matches.group_id = groups.id
+    LEFT JOIN rounds ON matches.round_id = rounds.id OR groups.round_id = rounds.id
+    JOIN teams team_away ON matches.team_away_id = team_away.id
+    JOIN teams team_home ON matches.team_home_id = team_home.id
+    LEFT JOIN predictions ON predictions.match_id = matches.id
+    #{'WHERE rounds.competition_id = :competition_id' if competition}
+    ORDER BY matches.kickoff_time
+    SQL
+    User.execute_sql(query, user_id: id, competition_id: competition&.id)
+  end
 end
