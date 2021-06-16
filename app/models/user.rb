@@ -69,7 +69,8 @@ class User < ApplicationRecord
       CASE
         WHEN predictions.choice = 0 THEN 'home'
         WHEN predictions.choice = 1 THEN 'away'
-        ELSE 'draw'
+        WHEN predictions.choice = 2 THEN 'draw'
+        ELSE NULL
       END AS prediction_choice
     FROM matches
     LEFT JOIN groups ON matches.group_id = groups.id
