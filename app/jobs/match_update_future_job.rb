@@ -9,10 +9,6 @@ class MatchUpdateFutureJob < ApplicationJob
     end
   end
 
-  def get_team(id)
-    Team.find_by(api_id: id)
-  end
-
   def update_matches_future(url)
     response = HTTParty.get(url).body
     parsed_response = JSON.parse(response)['data']
@@ -20,9 +16,13 @@ class MatchUpdateFutureJob < ApplicationJob
     matches.each do |match_info|
       kickoff_time = DateTime.parse("#{match_info['date']} #{match_info['time']}")
       puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']} (#{kickoff_time})"
-      match = Match.find_by(api_id: match_info['id']) || Match.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']), kickoff_time: kickoff_time)
-      next unless match # knock-out rounds with no teams
+      match = Match.find_by(api_id: match_info['id']) || Match.new
+      match.team_home ||= Team.find_by(api_id: match_info['home_id'])
+      match.team_away ||= Team.find_by(api_id: match_info['away_id'])
+      next unless match.team_home && match.team_away # knock-out rounds with no teams yet
 
+      # Only adding a round for knockout stages, group isn't provided by API :/
+      match.round = Round.find_by(api_name: match_info['round']) unless match_info['round'] == '3'
       match.api_id = match_info['id']
       match.location = match_info['location']
       match.kickoff_time = kickoff_time
