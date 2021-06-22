@@ -60,7 +60,7 @@ euros = Competition.find_or_create_by!(name: 'Euro 2020', start_date: Date.new(2
 puts '.. created the Euros'
 
 puts 'Creating or finding first round...'
-first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: euros)
+first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: euros, api_name: '3')
 puts "...#{Round.count} Total Rounds"
 
 puts 'Creating or finding groups...'
