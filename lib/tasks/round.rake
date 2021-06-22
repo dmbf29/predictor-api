@@ -11,5 +11,4 @@ namespace :round do
     Round.find_or_create_by!(name: 'Final', number: 5, competition: euros, api_name: 'F')
     puts "...#{euros.rounds.count} Total Rounds"
   end
-
 end
