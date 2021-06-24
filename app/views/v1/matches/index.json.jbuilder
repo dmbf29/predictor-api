@@ -1,6 +1,6 @@
 json.array! @matches do |match|
   match.symbolize_keys!
-  json.merge! match.slice(:id, :kickoff_time, :status, :group_id, :next_match_id, :round_id)
+  json.merge! match.slice(:id, :kickoff_time, :status, :group_id, :next_match_id, :round_id, :location)
   json.team_home do
     json.id match[:team_home_id]
     json.name match[:team_home_name]
