@@ -11,4 +11,8 @@ class Competition < ApplicationRecord
   validates :start_date, presence: true
   validates :end_date, presence: true
   scope :on_going, -> { where('start_date < :start AND end_date > :end', start: Date.today + 1, end: Date.today - 1) }
+
+  def matches
+    Match.where(group: groups).or(Match.where(round: rounds))
+  end
 end
