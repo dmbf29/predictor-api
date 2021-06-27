@@ -9,6 +9,7 @@ class ScheduleDailyTasksJob < ApplicationJob
         # Update right after kickoff and after the game
         MatchStartedJob.set(wait_until: kickoff_time).perform_later(kickoff_time)
         MatchUpdateHistoryJob.set(wait_until: kickoff_time + 100.minutes).perform_later(competition.id)
+        MatchUpdateHistoryJob.set(wait_until: kickoff_time + 200.minutes).perform_later(competition.id)
       end
     end
   end
