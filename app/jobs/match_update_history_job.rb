@@ -20,7 +20,7 @@ class MatchUpdateHistoryJob < ApplicationJob
     matches.each do |match_info|
       kickoff_time = DateTime.parse("#{match_info['date']} #{match_info['scheduled']}")
       puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']} (#{kickoff_time})"
-      match = competition.matches.find_by(api_id: match_info['fixture_id']) || competition.matches.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']), kickoff_time: kickoff_time)
+      match = Match.find_by(api_id: match_info['fixture_id']) || Match.find_by(api_id: match_info['fixture_id']).find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']), kickoff_time: kickoff_time)
       next unless match
 
       match.finished!
