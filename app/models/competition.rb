@@ -15,4 +15,8 @@ class Competition < ApplicationRecord
   def matches
     Match.where(group: groups).or(Match.where(round: rounds))
   end
+
+  def predictions
+    Prediction.where(match: matches)
+  end
 end
