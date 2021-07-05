@@ -24,7 +24,9 @@ class User < ApplicationRecord
   def score(competition)
     # TODO: user predictions should be scoped by competition => prediction -> match -> group -> round -> competition
     # predictions.where(competition: competition).count(&:correct?) * 3
-    competition.predictions.where(user: self).count(&:correct?) * 3
+    competition.predictions.includes(match: [:round, :group]).where(user: self).sum do |prediction|
+      prediction.correct? ? prediction.match.round.points : 0
+    end
   end
 
   def matches(competition: nil)

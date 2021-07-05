@@ -8,6 +8,7 @@ class Match < ApplicationRecord
   has_many :users, through: :predictions
   validates :kickoff_time, presence: true
   validates :status, presence: true
+  validates :api_id, uniqueness: { allow_nil: true }
   validates_uniqueness_of :kickoff_time, scope: %i[team_home team_away]
   validate :round_xor_group
   enum status: { upcoming: 'upcoming', started: 'started', finished: 'finished' }, _default: :upcoming
