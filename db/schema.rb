@@ -132,6 +132,7 @@ ActiveRecord::Schema.define(version: 2021_07_05_023732) do
     t.bigint "competition_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "api_name"
     t.index ["competition_id"], name: "index_rounds_on_competition_id"
   end
 
