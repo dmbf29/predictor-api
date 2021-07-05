@@ -30,8 +30,8 @@ class MatchUpdateHistoryJob < ApplicationJob
       match.save
 
       scores = ["FT Score > #{match_info['score']}"]
-      scores << "Extra-time > #{match_info['et_score']}" unless match_info['et_score'].blank?
-      scores << "Penalties > #{match_info['ps_score']}" unless match_info['ps_score'].blank?
+      scores << "Extra-time > #{match_info['et_score']}" unless match_info['et_score']&.blank?
+      scores << "Penalties > #{match_info['ps_score']}" unless match_info['ps_score']&.blank?
       puts "Match Update:\n#{scores.join("\n")}"
     end
     return parsed_response['next_page']
