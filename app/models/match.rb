@@ -15,7 +15,9 @@ class Match < ApplicationRecord
   def draw?
     return unless finished?
 
-    team_home_score == team_away_score
+    team_home_score == team_away_score &&
+    team_home_et_score == team_away_et_score &&
+    team_home_ps_score == team_away_ps_score
   end
 
   def round
@@ -33,7 +35,12 @@ class Match < ApplicationRecord
     return unless finished?
     return 'draw' if draw?
 
-    team_home_score > team_away_score ? 'home' : 'away'
+    home_wins = (
+      team_home_score > team_away_score ||
+      team_home_et_score > team_away_et_score ||
+      team_home_ps_score > team_away_ps_score
+    )
+    home_wins ? 'home' : 'away'
   end
 
   private
