@@ -24,12 +24,15 @@ class MatchUpdateHistoryJob < ApplicationJob
       next unless match
 
       match.finished!
-      scores = match_info['score'].split(' - ')
-      match.team_home_score = scores&.first
-      match.team_away_score = scores&.second
+      match.team_home_score, match.team_away_score = match_info['score']&.split(' - ')
+      match.team_home_et_score, match.team_away_et_score = match_info['et_score']&.split(' - ')
+      match.team_home_ps_score, match.team_away_ps_score = match_info['ps_score']&.split(' - ')
       match.save
 
-      puts "Match Update: #{match_info['score']}"
+      scores = ["FT Score > #{match_info['score']}"]
+      scores << "Extra-time > #{match_info['et_score']}" unless match_info['et_score'].blank?
+      scores << "Penalties > #{match_info['ps_score']}" unless match_info['ps_score'].blank?
+      puts "Match Update:\n#{scores.join("\n")}"
     end
     return parsed_response['next_page']
   end
