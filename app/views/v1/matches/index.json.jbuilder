@@ -9,8 +9,8 @@ json.array! @matches do |match|
     json.flag_url cl_image_path(match[:team_home_flag_key])
     if match[:status] == 'finished'
       json.score match[:team_home_score]
-      json.score match[:team_home_et_score]
-      json.score match[:team_home_ps_score]
+      json.et_score match[:team_home_et_score]
+      json.ps_score match[:team_home_ps_score]
     end
   end
   json.team_away do
@@ -21,8 +21,8 @@ json.array! @matches do |match|
     json.flag_url cl_image_path(match[:team_away_flag_key])
     if match[:status] == 'finished'
       json.score match[:team_away_score] 
-      json.score match[:team_away_et_score]
-      json.score match[:team_away_ps_score]
+      json.et_score match[:team_away_et_score]
+      json.ps_score match[:team_away_ps_score]
     end
   end
   if match[:prediction_choice]
