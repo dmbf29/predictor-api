@@ -1,4 +1,46 @@
 namespace :competition do
+  desc "Create World Cup 2022"
+  task copy: :environment do
+    groups = {
+  'Group A' => [
+    { name: 'Italy', abbrev: 'ITA' },
+    { name: 'Switzerland', abbrev: 'SUI' },
+    { name: 'Turkey', abbrev: 'TUR' },
+    { name: 'Wales', abbrev: 'WAL' }
+  ],
+  'Group B' => [
+    { name: 'Belgium', abbrev: 'BEL' },
+    { name: 'Denmark', abbrev: 'DEN' },
+    { name: 'Finland', abbrev: 'FIN' },
+    { name: 'Russia', abbrev: 'RUS' }
+  ],
+  'Group C' => [
+    { name: 'Austria', abbrev: 'AUT' },
+    { name: 'Netherlands', abbrev: 'NED' },
+    { name: 'FYR Macedonia', abbrev: 'MKD' },
+    { name: 'Ukraine', abbrev: 'UKR' }
+  ],
+  'Group D' => [
+    { name: 'Croatia', abbrev: 'CRO' },
+    { name: 'Czech Republic', abbrev: 'CZE' },
+    { name: 'England', abbrev: 'ENG' },
+    { name: 'Scotland', abbrev: 'SCO' }
+  ],
+  'Group E' => [
+    { name: 'Poland', abbrev: 'POL' },
+    { name: 'Slovakia', abbrev: 'SVK' },
+    { name: 'Spain', abbrev: 'ESP' },
+    { name: 'Sweden', abbrev: 'SWE' }
+  ],
+  'Group F' => [
+    { name: 'France', abbrev: 'FRA' },
+    { name: 'Germany', abbrev: 'GER' },
+    { name: 'Hungary', abbrev: 'HUN' },
+    { name: 'Portugal', abbrev: 'POR' }
+  ]
+}
+  end
+
   desc "Update upcoming fixtures for on-going competitions"
   task update_ongoing_matches: :environment do
     competitions = Competition.on_going
