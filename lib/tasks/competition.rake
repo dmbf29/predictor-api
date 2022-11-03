@@ -46,6 +46,19 @@ namespace :competition do
     puts 'Creating or finding first round...'
     first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: world_cup, api_name: '3')
     puts "...#{world_cup.rounds.count} Total Rounds"
+
+    puts 'Creating or finding groups...'
+    groups.each_key do |group_name|
+      puts "...#{group_name}..."
+      group = Group.find_or_create_by!(name: group_name, round: first_round)
+      groups[group_name].each do |team_hash|
+        puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
+        team = Team.find_or_create_by!(team_hash)
+        Affiliation.find_or_create_by!(team: team, group: group)
+      end
+    end
+    puts "...#{world_cup.teams.count} Total Teams"
+    puts "...#{world_cup.groups.count} Total Groups"
   end
 
   desc "Update upcoming fixtures for on-going competitions"
