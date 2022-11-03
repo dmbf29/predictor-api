@@ -1,50 +1,62 @@
 namespace :competition do
   desc "Create World Cup 2022"
-  task copy: :environment do
+  task world_cup: :environment do
     groups = {
       'Group A' => [
-        { name: 'Italy', abbrev: 'ITA' },
-        { name: 'Switzerland', abbrev: 'SUI' },
-        { name: 'Turkey', abbrev: 'TUR' },
-        { name: 'Wales', abbrev: 'WAL' }
+        { name: 'Qatar', abbrev: 'QAT' },
+        { name: 'Ecuador', abbrev: 'ECU' },
+        { name: 'Senegal', abbrev: 'SEN' },
+        { name: 'Netherlands', abbrev: 'NED' }
       ],
       'Group B' => [
-        { name: 'Belgium', abbrev: 'BEL' },
-        { name: 'Denmark', abbrev: 'DEN' },
-        { name: 'Finland', abbrev: 'FIN' },
-        { name: 'Russia', abbrev: 'RUS' }
+        { name: 'England', abbrev: 'ENG' },
+        { name: 'IR Iran', abbrev: 'IRN' },
+        { name: 'USA', abbrev: 'USA' },
+        { name: 'Wales', abbrev: 'WAL' }
       ],
       'Group C' => [
-        { name: 'Austria', abbrev: 'AUT' },
-        { name: 'Netherlands', abbrev: 'NED' },
-        { name: 'FYR Macedonia', abbrev: 'MKD' },
-        { name: 'Ukraine', abbrev: 'UKR' }
+        { name: 'Argentina', abbrev: 'ARG' },
+        { name: 'Saudi Arabia', abbrev: 'KSA' },
+        { name: 'Mexico', abbrev: 'MEX' },
+        { name: 'Poland', abbrev: 'POL' }
       ],
       'Group D' => [
-        { name: 'Croatia', abbrev: 'CRO' },
-        { name: 'Czech Republic', abbrev: 'CZE' },
-        { name: 'England', abbrev: 'ENG' },
-        { name: 'Scotland', abbrev: 'SCO' }
+        { name: 'France', abbrev: 'FRA' },
+        { name: 'Australia', abbrev: 'AUS' },
+        { name: 'Denmark', abbrev: 'DEN' },
+        { name: 'Tunisia', abbrev: 'TUN' }
       ],
       'Group E' => [
-        { name: 'Poland', abbrev: 'POL' },
-        { name: 'Slovakia', abbrev: 'SVK' },
         { name: 'Spain', abbrev: 'ESP' },
-        { name: 'Sweden', abbrev: 'SWE' }
+        { name: 'Costa Rica', abbrev: 'CRC' },
+        { name: 'Germany', abbrev: 'GER' },
+        { name: 'Japan', abbrev: 'JPN' }
       ],
       'Group F' => [
-        { name: 'France', abbrev: 'FRA' },
-        { name: 'Germany', abbrev: 'GER' },
-        { name: 'Hungary', abbrev: 'HUN' },
-        { name: 'Portugal', abbrev: 'POR' }
+        { name: 'Belgium', abbrev: 'BEL' },
+        { name: 'Canada', abbrev: 'CAN' },
+        { name: 'Morocco', abbrev: 'MAR' },
+        { name: 'Croatia', abbrev: 'CRO' }
+      ],
+      'Group G' => [
+        { name: 'Brazil', abbrev: 'BRA' },
+        { name: 'Serbia', abbrev: 'SRB' },
+        { name: 'Switzerland', abbrev: 'SUI' },
+        { name: 'Camerooon', abbrev: 'CMR' }
+      ],
+      'Group H' => [
+        { name: 'Portugal', abbrev: 'POR' },
+        { name: 'Ghana', abbrev: 'GHA' },
+        { name: 'Uruguay', abbrev: 'URU' },
+        { name: 'Korea Republic', abbrev: 'KOR' }
       ]
     }
     puts 'Creating the World Cup...'
-    world_cup = Competition.find_or_create_by!(name: 'World Cup 2022', start_date: Date.new(2022, 11, 20), end_date: Date.new(2022, 12, 18))
+    world_cup = Competition.find_or_create_by(name: 'World Cup 2022', start_date: Date.new(2022, 11, 20), end_date: Date.new(2022, 12, 18))
     puts '.. created the World Cup'
 
     puts 'Creating or finding first round...'
-    first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: world_cup, api_name: '3')
+    first_round = Round.find_or_create_by(name: 'Group Stage', number: 1, competition: world_cup, api_name: '3')
     puts "...#{world_cup.rounds.count} Total Rounds"
 
     puts 'Creating or finding groups...'
@@ -53,12 +65,29 @@ namespace :competition do
       group = Group.find_or_create_by!(name: group_name, round: first_round)
       groups[group_name].each do |team_hash|
         puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
-        team = Team.find_or_create_by!(team_hash)
-        Affiliation.find_or_create_by!(team: team, group: group)
+        team = Team.find_or_create_by(team_hash)
+        Affiliation.find_or_create_by(team: team, group: group)
       end
     end
     puts "...#{world_cup.teams.count} Total Teams"
     puts "...#{world_cup.groups.count} Total Groups"
+
+    doug = User.find_by(email: 'douglasmberkley@gmail.com')
+    trouni = User.find_by(email: 'trouni@gmail.com')
+
+    puts 'Creating a test leaderboards'
+    leaderboard = Leaderboard.find_or_create_by(
+      name: 'Admin Leaderboard',
+      competition: world_cup,
+      user: trouni
+    )
+    Membership.find_or_create_by(leaderboard: leaderboard, user: doug)
+    leaderboard = Leaderboard.find_or_create_by(
+      name: 'Admin Leaderboard',
+      competition: world_cup,
+      user: doug
+    )
+    Membership.find_or_create_by(leaderboard: leaderboard, user: trouni)
   end
 
   desc "Update upcoming fixtures for on-going competitions"
