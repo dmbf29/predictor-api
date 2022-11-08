@@ -3,7 +3,7 @@ namespace :team do
   task add_flag: :environment do
     competition_id = 362
     season = 2022
-    response = HTTParty.get("http://livescore-api.com/api-client/countries/list.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition_id}&season=#{season}").body
+    response = HTTParty.get("https://livescore-api.com/api-client/competitions/participants.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition_id}&season=#{season}").body
     countries = JSON.parse(response)['data']
 
     not_found = []
