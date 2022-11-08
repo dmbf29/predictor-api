@@ -55,6 +55,7 @@ namespace :competition do
     world_cup = Competition.find_or_create_by(name: 'World Cup 2022', start_date: Date.new(2022, 11, 20), end_date: Date.new(2022, 12, 18))
     puts '.. created the World Cup'
 
+    # TODO: How do we create the rounds??
     puts 'Creating or finding first round...'
     first_round = Round.find_or_create_by(name: 'Group Stage', number: 1, competition: world_cup, api_name: '3')
     puts "...#{world_cup.rounds.count} Total Rounds"
