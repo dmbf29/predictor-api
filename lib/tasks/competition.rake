@@ -10,7 +10,7 @@ namespace :competition do
       ],
       'Group B' => [
         { name: 'England', abbrev: 'ENG' },
-        { name: 'IR Iran', abbrev: 'IRN' },
+        { name: 'Iran', abbrev: 'IRN' },
         { name: 'USA', abbrev: 'USA' },
         { name: 'Wales', abbrev: 'WAL' }
       ],
@@ -48,7 +48,7 @@ namespace :competition do
         { name: 'Portugal', abbrev: 'POR' },
         { name: 'Ghana', abbrev: 'GHA' },
         { name: 'Uruguay', abbrev: 'URU' },
-        { name: 'Korea Republic', abbrev: 'KOR' }
+        { name: 'South Korea', abbrev: 'KOR' }
       ]
     }
     puts 'Creating the World Cup...'
