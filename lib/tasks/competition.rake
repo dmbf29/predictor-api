@@ -52,7 +52,7 @@ namespace :competition do
       ]
     }
     puts 'Creating the World Cup...'
-    world_cup = Competition.find_or_create_by(name: 'World Cup 2022', start_date: Date.new(2022, 11, 20), end_date: Date.new(2022, 12, 18))
+    world_cup = Competition.find_or_create_by(name: 'World Cup 2022', start_date: Date.new(2022, 11, 20), end_date: Date.new(2022, 12, 18), api_id: 362)
     puts '.. created the World Cup'
 
     # TODO: How do we create the rounds??
