@@ -1,15 +1,16 @@
 namespace :team do
   desc "Calls Live-Score API, saves API id and gets the flag"
   task add_flag: :environment do
-    competition_id = 387
-    response = HTTParty.get("http://livescore-api.com/api-client/countries/list.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition_id}").body
-    countries = JSON.parse(response)['data']['country']
+    competition_id = 362
+    season = 2022
+    response = HTTParty.get("http://livescore-api.com/api-client/countries/list.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition_id}&season=#{season}").body
+    countries = JSON.parse(response)['data']
 
     not_found = []
     Team.find_each do |team|
       country = countries.find { |country| country['name'] == team.name }
       if country
-        team.api_id = country['national_team']['id']
+        team.api_id = country['id']
         team.save
 
         next if team.flag.attached?
