@@ -13,10 +13,12 @@ class Competition < ApplicationRecord
   scope :on_going, -> { where('start_date < :start AND end_date > :end', start: Date.today + 1, end: Date.today - 1) }
 
   def matches
+    # TODO: by competition, right???
     Match.where(group: groups).or(Match.where(round: rounds))
   end
 
   def predictions
+    # TODO: by competition, right???
     Prediction.where(match: matches)
   end
 end
