@@ -15,7 +15,7 @@ namespace :team do
 
         next if team.flag.attached?
 
-        scrape_flag(team)
+        fetch_flag(team)
       else
         not_found << team.name
       end
@@ -24,7 +24,7 @@ namespace :team do
     puts not_found.any? ? "Teams not found: #{not_found.join(', ')}" : 'Found all teams'
   end
 
-  def scrape_flag(team)
+  def fetch_flag(team)
     url = "https://livescore-api.com/api-client/countries/flag.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&team_id=#{team.api_id}"
     puts "#{team.name}: #{url}"
     file = URI.open(url)
