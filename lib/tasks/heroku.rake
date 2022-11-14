@@ -8,7 +8,7 @@ namespace :heroku do
     run 'rails db:drop'
 
     puts '-----> pulling the DB...'
-    run 'heroku pg:pull postgresql-cubic-90889 predictor_api_development'
+    run 'heroku pg:pull postgresql-cubic-90889 predictor_api_development -a predict-to-win'
   end
 
   def run(*cmd)
