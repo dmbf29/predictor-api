@@ -1,20 +1,21 @@
 namespace :team do
   desc "Calls Live-Score API, saves API id and gets the flag"
   task add_flag: :environment do
-    competition_id = 387
-    response = HTTParty.get("http://livescore-api.com/api-client/countries/list.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition_id}").body
-    countries = JSON.parse(response)['data']['country']
+    competition_id = 362
+    season = 2022
+    response = HTTParty.get("https://livescore-api.com/api-client/competitions/participants.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition_id}&season=#{season}").body
+    countries = JSON.parse(response)['data']
 
     not_found = []
-    Team.find_each do |team|
+    competition = Competition.find_by(api_id: competition_id)
+    competition.teams.find_each do |team|
       country = countries.find { |country| country['name'] == team.name }
       if country
-        team.api_id = country['national_team']['id']
+        team.api_id = country['id']
         team.save
+        next if team.flag.attached? && team.badge.attached?
 
-        next if team.flag.attached?
-
-        scrape_flag(team)
+        fetch_flag(team)
       else
         not_found << team.name
       end
@@ -23,11 +24,12 @@ namespace :team do
     puts not_found.any? ? "Teams not found: #{not_found.join(', ')}" : 'Found all teams'
   end
 
-  def scrape_flag(team)
+  def fetch_flag(team)
     url = "https://livescore-api.com/api-client/countries/flag.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&team_id=#{team.api_id}"
     puts "#{team.name}: #{url}"
     file = URI.open(url)
-    team.flag.attach(io: file, filename: 'flag.png', content_type: 'image/png')
+    team.flag.attach(io: file, filename: 'flag.png', content_type: 'image/png') unless team.flag.attached?
+    team.badge.attach(io: file, filename: 'badge.png', content_type: 'image/png') unless team.badge.attached?
     puts team.flag.attached? ? 'Success' : 'Failed'
   end
 

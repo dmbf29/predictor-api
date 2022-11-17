@@ -1,4 +1,119 @@
 namespace :competition do
+  desc "Create World Cup 2022"
+  task world_cup: :environment do
+    groups = {
+      'Group A' => {
+        api_id: 1913,
+        teams: [
+          { name: 'Qatar', abbrev: 'QAT' },
+          { name: 'Ecuador', abbrev: 'ECU' },
+          { name: 'Senegal', abbrev: 'SEN' },
+          { name: 'Netherlands', abbrev: 'NED' }
+        ]
+      },
+      'Group B' => {
+        api_id: 1914,
+        teams: [
+          { name: 'England', abbrev: 'ENG' },
+          { name: 'Iran', abbrev: 'IRN' },
+          { name: 'USA', abbrev: 'USA' },
+          { name: 'Wales', abbrev: 'WAL' }
+        ]
+      },
+      'Group C' => {
+        api_id: 1915,
+        teams: [
+          { name: 'Argentina', abbrev: 'ARG' },
+          { name: 'Saudi Arabia', abbrev: 'KSA' },
+          { name: 'Mexico', abbrev: 'MEX' },
+          { name: 'Poland', abbrev: 'POL' }
+        ]
+      },
+      'Group D' => {
+        api_id: 1916,
+        teams: [
+          { name: 'France', abbrev: 'FRA' },
+          { name: 'Australia', abbrev: 'AUS' },
+          { name: 'Denmark', abbrev: 'DEN' },
+          { name: 'Tunisia', abbrev: 'TUN' }
+        ]
+      },
+      'Group E' => {
+        api_id: 1917,
+        teams: [
+          { name: 'Spain', abbrev: 'ESP' },
+          { name: 'Costa Rica', abbrev: 'CRC' },
+          { name: 'Germany', abbrev: 'GER' },
+          { name: 'Japan', abbrev: 'JPN' }
+        ]
+      },
+      'Group F' => {
+        api_id: 1918,
+        teams: [
+          { name: 'Belgium', abbrev: 'BEL' },
+          { name: 'Canada', abbrev: 'CAN' },
+          { name: 'Morocco', abbrev: 'MAR' },
+          { name: 'Croatia', abbrev: 'CRO' }
+        ]
+      },
+      'Group G' => {
+        api_id: 1919,
+        teams: [
+          { name: 'Brazil', abbrev: 'BRA' },
+          { name: 'Serbia', abbrev: 'SRB' },
+          { name: 'Switzerland', abbrev: 'SUI' },
+          { name: 'Cameroon', abbrev: 'CMR' }
+        ]
+      },
+      'Group H' => {
+        api_id: 1920,
+        teams: [
+          { name: 'Portugal', abbrev: 'POR' },
+          { name: 'Ghana', abbrev: 'GHA' },
+          { name: 'Uruguay', abbrev: 'URU' },
+          { name: 'South Korea', abbrev: 'KOR' }
+        ]
+      }
+    }
+    puts 'Creating the World Cup...'
+    world_cup = Competition.find_or_create_by(name: 'World Cup 2022', start_date: Date.new(2022, 11, 20), end_date: Date.new(2022, 12, 18), api_id: 362)
+    puts '.. created the World Cup'
+
+    puts 'Creating or finding first round...'
+    first_round = Round.find_or_create_by(name: 'Group Stage', number: 1, competition: world_cup, api_name: '1')
+    puts "...#{world_cup.rounds.count} Total Rounds"
+
+    puts 'Creating or finding groups...'
+    groups.each_key do |group_name|
+      puts "...#{group_name}..."
+      group = Group.find_or_create_by!(name: group_name, round: first_round, api_id: groups[group_name][:api_id])
+      groups[group_name][:teams].each do |team_hash|
+        puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
+        team = Team.find_or_create_by(team_hash)
+        Affiliation.find_or_create_by(team: team, group: group)
+      end
+    end
+    puts "...#{world_cup.teams.count} Total Teams"
+    puts "...#{world_cup.groups.count} Total Groups"
+
+    doug = User.find_by(email: 'douglasmberkley@gmail.com')
+    trouni = User.find_by(email: 'trouni@gmail.com')
+
+    puts 'Creating a test leaderboards'
+    leaderboard = Leaderboard.find_or_create_by(
+      name: 'Admin Leaderboard',
+      competition: world_cup,
+      user: trouni
+    )
+    Membership.find_or_create_by(leaderboard: leaderboard, user: doug)
+    leaderboard = Leaderboard.find_or_create_by(
+      name: 'Admin Leaderboard',
+      competition: world_cup,
+      user: doug
+    )
+    Membership.find_or_create_by(leaderboard: leaderboard, user: trouni)
+  end
+
   desc "Update upcoming fixtures for on-going competitions"
   task update_ongoing_matches: :environment do
     competitions = Competition.on_going
