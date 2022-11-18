@@ -32,7 +32,9 @@ gem 'devise_token_auth', github: 'lynndylanhurley/devise_token_auth'
 gem 'faker'
 gem 'httparty'
 gem 'omniauth'
-gem 'net-smtp'
+gem 'net-smtp', require: false
+gem 'net-imap', require: false
+gem 'net-pop', require: false
 gem 'pundit'
 gem 'rexml'
 gem 'scout_apm'
