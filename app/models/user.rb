@@ -9,6 +9,7 @@ class User < ApplicationRecord
   # has_many :competitions, through: :leaderboards
   has_many :predictions, dependent: :destroy
   has_many :matches, through: :predictions
+  validates :name, presence: true, on: :update, if: :name_changed?
 
   def leaderboards(competition = nil)
     # this includes creator or leaderboard and members
