@@ -29,6 +29,12 @@ class User < ApplicationRecord
     end
   end
 
+  def possible_score(competition)
+    competition.matches.where(status: 'finished').sum do |match|
+      match.round.points
+    end
+  end
+
   def matches(competition: nil)
     query = <<-SQL.freeze
     WITH predictions AS (
