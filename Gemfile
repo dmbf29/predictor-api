@@ -40,7 +40,7 @@ gem 'rexml'
 gem 'scout_apm'
 gem 'sidekiq', '~> 5.0.4'
 gem 'sidekiq-failures', '~> 1.0'
-gem 'watir', '6.16.5'
+gem "watir", "~> 7.1"
 gem 'webdrivers'
 
 group :development, :test do
