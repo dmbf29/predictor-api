@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
-  include Pundit
+  include Pundit::Authorization
 
   before_action :authenticate_user!, unless: :token_auth_controller?
 
