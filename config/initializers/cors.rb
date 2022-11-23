@@ -10,6 +10,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     origins [
       # Local server
       %r{\Ahttps?://localhost:\d{4}},
+      %r{\Ahttps?://192\.168\.\d\.\d{1,3}:\d{4}},
       # Netlify app and preview deploys
       %r{\Ahttps?://(.+--)?octacle\.netlify\.app},
       # Production app
