@@ -5,25 +5,18 @@ class Leaderboard < ApplicationRecord
   has_many :users, through: :memberships
   validates :name, presence: true
   has_secure_token :password
-
-  def users
-    User.includes(:memberships).where(memberships: { leaderboard: self }).or(User.where(id: user))
-  end
-
-  def leave(current_user)
-    if user == current_user
-      # remove if empty OR transfer
-      memberships.any? ? transfer_ownership : destroy
-    elsif (membership = memberships.find_by(user: current_user))
-      # remove membership if just a regular member
-      membership.destroy
-    end
-  end
+  after_create :create_owner_membership
 
   def transfer_ownership
     membership = memberships.first
     membership.destroy
     self.user = membership.user
     save
+  end
+
+  private
+
+  def create_owner_membership
+    memberships.create(user: user)
   end
 end
