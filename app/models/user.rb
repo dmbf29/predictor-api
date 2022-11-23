@@ -5,18 +5,12 @@ class User < ApplicationRecord
     :omniauthable # :confirmable
   include DeviseTokenAuth::Concerns::User
   has_many :memberships, dependent: :destroy
+  has_many :leaderboards
   # TODO: Fix this
   # has_many :competitions, through: :leaderboards
   has_many :predictions, dependent: :destroy
   has_many :matches, through: :predictions
   validates :name, presence: true, on: :update, if: :name_changed?
-
-  def leaderboards(competition = nil)
-    # this includes creator or leaderboard and members
-    leaderboards = Leaderboard.includes(:memberships).where(memberships: { user: self }).or(Leaderboard.where(user: self))
-    leaderboards = leaderboards.where(competition: competition) if competition
-    leaderboards
-  end
 
   def display_name
     name || email.split('@').first

@@ -3,6 +3,7 @@ class Leaderboard < ApplicationRecord
   belongs_to :competition
   has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
+  has_many :locked_predictions, -> { locked }, through: :users, source: :predictions
   validates :name, presence: true
   has_secure_token :password
   after_create :create_owner_membership

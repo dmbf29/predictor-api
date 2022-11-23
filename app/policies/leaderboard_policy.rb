@@ -1,7 +1,7 @@
 class LeaderboardPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      user.leaderboards
+      scope.where(user: user)
     end
   end
 

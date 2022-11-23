@@ -6,6 +6,8 @@ class Prediction < ApplicationRecord
   validates :choice, presence: true
   enum choice: %i[home away draw]
 
+  scope :locked, -> { joins(:match).where.not(matches: { status: :upcoming }) }
+
   def correct?
     return unless match.finished?
 
