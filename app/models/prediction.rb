@@ -1,7 +1,7 @@
 class Prediction < ApplicationRecord
   belongs_to :match
   has_one :competition, through: :match
-  belongs_to :user
+  belongs_to :user, touch: true
   validates_uniqueness_of :user, scope: :match
   validates :choice, presence: true
   enum choice: %i[home away draw]

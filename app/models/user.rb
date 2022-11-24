@@ -37,6 +37,14 @@ class User < ApplicationRecord
   end
 
   def matches(competition: nil)
+    Rails.cache.fetch("#{cache_key_with_version}-user-#{id}") do
+      execute_matches_query(competition: competition).to_a
+    end
+  end
+
+  private
+
+  def execute_matches_query(competition: nil)
     query = <<-SQL.freeze
     WITH predictions AS (
       SELECT *
@@ -92,4 +100,6 @@ class User < ApplicationRecord
     SQL
     User.execute_sql(query, user_id: id, competition_id: competition&.id)
   end
+
+  
 end

@@ -40,6 +40,9 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  # for running expensive queries from cache
+  config.action_controller.perform_caching = true
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
