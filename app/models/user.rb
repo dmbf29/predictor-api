@@ -47,7 +47,7 @@ class User < ApplicationRecord
   def matches(competition: nil)
     cache_key = "#{cache_key_with_version}-matches"
     cached_matches = Rails.cache.read(cache_key)&.to_a
-    if run_matches_query?(cached_matches)
+    if run_matches_query?(cached_result: cached_matches, competition: competition)
       puts_query_message("matches", cache_key)
       matches_query_result = execute_matches_query(competition: competition).to_a
       Rails.cache.write("#{cache_key_with_version}-matches", matches_query_result)
@@ -69,23 +69,24 @@ class User < ApplicationRecord
   end
 
   def run_score_query?(attributes = {})
-    attributes[:cached_score].nil? || score_needs_recalculating?(attributes[:competition])
+    attributes[:cached_score].nil? || score_needs_recalculating?(competition: attributes[:competition])
   end
 
   # if matches have been played since the last cache was written, recalculate the score
-  def score_needs_recalculating?(competition)
-    expire_matches_cache?(matches(competition: competition))
+  def score_needs_recalculating?(attributes = {})
+    
+    expire_matches_cache?(cached_matches: matches(competition: attributes[:competition]), competition: attributes[:competition])
   end
 
   # run query if cache is empty or if the next upcoming match is in the past
-  def run_matches_query?(cached_result)
-    cached_result.nil? || expire_matches_cache?(cached_result)
+  def run_matches_query?(attributes = {})
+    attributes[:cached_result].nil? || expire_matches_cache?({competition: attributes[:competition], cached_matches: attributes[:cached_result]})
   end
 
   # this returns false if matches have been played since the last cache was written
-  def expire_matches_cache?(cached_results_array)
-    next_upcoming_match_according_to_cache = cached_results_array.select { |match| match['status'] === 'upcoming' }.map { |match| match['kickoff_time']}.sort.first
-    next_upcoming_match_according_to_cache < DateTime.now
+  def expire_matches_cache?(attributes = {})
+    matches_last_updated_at_according_to_cache = attributes[:cached_matches].max { |match| match['updated_at'] }['updated_at']
+    matches_last_updated_at_according_to_cache > (attributes[:competition]&.matches || Match).maximum(:updated_at)
   end
 
   def execute_score_query(competition)
