@@ -37,12 +37,26 @@ class User < ApplicationRecord
   end
 
   def matches(competition: nil)
-    Rails.cache.fetch("#{cache_key_with_version}-user-#{id}") do
-      execute_matches_query(competition: competition).to_a
+    cached_results_array = Rails.cache.read("#{cache_key_with_version}-matches")&.to_a
+    if run_matches_query?(cached_results_array) 
+      query_results_array = execute_matches_query(competition: competition).to_a
+      Rails.cache.write("#{cache_key_with_version}-matches", query_results_array)
+      return query_results_array
+    else
+      return cached_results_array
     end
   end
 
   private
+
+  def run_matches_query?(cached_results_array)
+    cached_results_array.nil? || matches_cached_result_expired?(cached_results_array)
+  end
+
+  def matches_cached_result_expired?(cached_results_array)
+    next_upcoming_match_according_to_cache = cached_results_array.select { |match| match['status'] === 'upcoming' }.map { |match| match['kickoff_time']}.sort.first
+    next_upcoming_match_according_to_cache < DateTime.now
+  end
 
   def execute_matches_query(competition: nil)
     query = <<-SQL.freeze
