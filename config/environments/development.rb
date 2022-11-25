@@ -22,7 +22,9 @@ Rails.application.configure do
       'Cache-Control' => "public, max-age=#{2.days.to_i}"
     }
   else
-    config.action_controller.perform_caching = false
+
+    # for testing expensive queries in development
+    config.action_controller.perform_caching = true
 
     config.cache_store = :null_store
   end
@@ -41,7 +43,6 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # for running expensive queries from cache
-  config.action_controller.perform_caching = true
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
