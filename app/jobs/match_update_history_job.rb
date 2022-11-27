@@ -23,16 +23,7 @@ class MatchUpdateHistoryJob < ApplicationJob
       match = competition.matches.find_by(api_id: match_info['fixture_id']) || competition.matches.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']), kickoff_time: kickoff_time)
       next unless match
 
-      match.finished!
-      match.team_home_score, match.team_away_score = match_info['score']&.split(' - ')
-      match.team_home_et_score, match.team_away_et_score = match_info['et_score']&.split(' - ')
-      match.team_home_ps_score, match.team_away_ps_score = match_info['ps_score']&.split(' - ')
-      match.save
-
-      scores = ["FT Score > #{match_info['score']}"]
-      scores << "Extra-time > #{match_info['et_score']}" unless match_info['et_score']&.blank?
-      scores << "Penalties > #{match_info['ps_score']}" unless match_info['ps_score']&.blank?
-      puts "Match Update:\n#{scores.join("\n")}"
+      match.update_with_api(match_info)
     end
     return parsed_response['next_page']
   end
