@@ -1,0 +1,50 @@
+{"success":true,"data":{"match":[
+{
+"ht_score": "0 - 0",
+"has_lineups": true,
+"location": "Lusail Iconic Stadium, Lusail",
+"events": "https://livescore-api.com/api-client/scores/events.json?key=ApDugiN21K7nGZRl&secret=uNR7nJIwjpFLurX5RBA7TnaV8hjOhaaL&id=382953",
+"score": "2 - 0",
+"league_id": 0,
+"scheduled": "19:00",
+"odds": {
+"pre": {
+"1": 1.55,
+"2": 7,
+"X": 3.8
+},
+"live": {
+"1": 1.04,
+"2": 151,
+"X": 13
+}
+},
+"competition_name": "FIFA World Cup",
+"id": 382953,
+"country": null,
+"status": "IN PLAY",
+"last_changed": "2022-11-26 20:53:03",
+"et_score": "",
+"competition_id": 362,
+"fixture_id": 1527784,
+"away_id": 1450,
+"home_id": 1443,
+"h2h": "https://livescore-api.com/api-client/teams/head2head.json?key=ApDugiN21K7nGZRl&secret=uNR7nJIwjpFLurX5RBA7TnaV8hjOhaaL&team1_id=1443&team2_id=1450",
+"home_name": "Argentina",
+"ps_score": "",
+"time": "90+",
+"league_name": "",
+"away_name": "Mexico",
+"ft_score": "",
+"federation": {
+"id": 1,
+"name": "FIFA"
+},
+"added": "2022-11-26 18:45:18",
+"outcomes": {
+"half_time": "X",
+"full_time": null,
+"extra_time": null
+}
+}
+]}}
