@@ -7,7 +7,7 @@ json.array! @matches do |match|
     json.abbrev match[:team_home_abbrev]
     json.badge_url cl_image_path(match[:team_home_badge_key])
     json.flag_url cl_image_path(match[:team_home_flag_key])
-    if match[:status] == 'finished'
+    if %w[finished started].include?(match[:status])
       json.score match[:team_home_score]
       json.et_score match[:team_home_et_score]
       json.ps_score match[:team_home_ps_score]
@@ -19,7 +19,7 @@ json.array! @matches do |match|
     json.abbrev match[:team_away_abbrev]
     json.badge_url cl_image_path(match[:team_away_badge_key])
     json.flag_url cl_image_path(match[:team_away_flag_key])
-    if match[:status] == 'finished'
+    if %w[finished started].include?(match[:status])
       json.score match[:team_away_score] 
       json.et_score match[:team_away_et_score]
       json.ps_score match[:team_away_ps_score]
