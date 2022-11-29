@@ -5,7 +5,7 @@ class User < ApplicationRecord
     :omniauthable # :confirmable
   include DeviseTokenAuth::Concerns::User
   has_many :memberships, dependent: :destroy
-  has_many :leaderboards
+  has_many :leaderboards, through: :memberships
   # TODO: Fix this
   # has_many :competitions, through: :leaderboards
   has_many :predictions, dependent: :destroy
