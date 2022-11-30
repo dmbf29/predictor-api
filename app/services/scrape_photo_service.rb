@@ -10,8 +10,9 @@ class ScrapePhotoService
 
   def call
     url = "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/qatar2022/teams/#{competition.teams.sample.name.split.join('-').downcase}/squad"
-    browser = Watir::Browser.new :chrome, headless: true
+    browser = Watir::Browser.new :chrome, options: { args: %w[--headless --no-sandbox --disable-dev-shm-usage --disable-gpu --remote-debugging-port=9222] }
     browser.goto url
+    puts "Going to: #{url}"
     sleep(15)
     html_doc = Nokogiri::HTML.parse(browser.html)
     main_div = html_doc.search('main section')[2]
