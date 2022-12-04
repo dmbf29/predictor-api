@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_08_131452) do
+ActiveRecord::Schema.define(version: 2022_12_04_153322) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -118,11 +119,11 @@ ActiveRecord::Schema.define(version: 2022_11_08_131452) do
   end
 
   create_table "predictions", force: :cascade do |t|
-    t.integer "choice"
     t.bigint "match_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "choice"
     t.index ["match_id"], name: "index_predictions_on_match_id"
     t.index ["user_id"], name: "index_predictions_on_user_id"
   end
@@ -134,6 +135,7 @@ ActiveRecord::Schema.define(version: 2022_11_08_131452) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "api_name"
+    t.integer "points", null: false
     t.index ["competition_id"], name: "index_rounds_on_competition_id"
   end
 
@@ -194,4 +196,121 @@ ActiveRecord::Schema.define(version: 2022_11_08_131452) do
   add_foreign_key "predictions", "matches"
   add_foreign_key "predictions", "users"
   add_foreign_key "rounds", "competitions"
+
+  create_view "match_results", sql_definition: <<-SQL
+      WITH match_rounds AS (
+           SELECT m_1.id AS match_id,
+                  CASE
+                      WHEN (m_1.round_id IS NOT NULL) THEN m_1.round_id
+                      ELSE g.round_id
+                  END AS round_id
+             FROM ((matches m_1
+               LEFT JOIN groups g ON ((m_1.group_id = g.id)))
+               LEFT JOIN rounds r_1 ON ((m_1.round_id = r_1.id)))
+          )
+   SELECT m.id AS match_id,
+      m.group_id,
+      r.id AS round_id,
+      r.competition_id,
+      m.kickoff_time,
+      m.team_home_score,
+      m.team_away_score,
+      m.status,
+      m.team_away_id,
+      m.team_home_id,
+      m.created_at,
+      m.updated_at,
+      m.next_match_id,
+      m.api_id,
+      m.location,
+      m.team_home_et_score,
+      m.team_away_et_score,
+      m.team_home_ps_score,
+      m.team_away_ps_score,
+          CASE
+              WHEN (((m.status)::text = 'upcoming'::text) OR ((m.status)::text = 'started'::text)) THEN NULL::text
+              WHEN ((m.team_home_score = m.team_away_score) AND (m.team_home_et_score = m.team_away_et_score) AND (m.team_home_ps_score = m.team_away_ps_score)) THEN 'draw'::text
+              WHEN ((m.team_home_score > m.team_away_score) OR ((m.team_home_et_score IS NOT NULL) AND (m.team_home_et_score > m.team_away_et_score)) OR ((m.team_home_ps_score IS NOT NULL) AND (m.team_home_ps_score > m.team_away_ps_score))) THEN 'home'::text
+              ELSE 'away'::text
+          END AS winning_side,
+          CASE
+              WHEN (((m.status)::text = 'upcoming'::text) OR ((m.status)::text = 'started'::text)) THEN NULL::bigint
+              WHEN ((m.team_home_score = m.team_away_score) AND (m.team_home_et_score = m.team_away_et_score) AND (m.team_home_ps_score = m.team_away_ps_score)) THEN NULL::bigint
+              WHEN ((m.team_home_score > m.team_away_score) OR ((m.team_home_et_score IS NOT NULL) AND (m.team_home_et_score > m.team_away_et_score)) OR ((m.team_home_ps_score IS NOT NULL) AND (m.team_home_ps_score > m.team_away_ps_score))) THEN m.team_home_id
+              ELSE m.team_away_id
+          END AS winner_id,
+      r.number AS round_number,
+      r.points,
+      r.name AS round_name
+     FROM ((matches m
+       JOIN match_rounds mr ON ((mr.match_id = m.id)))
+       JOIN rounds r ON ((mr.round_id = r.id)));
+  SQL
+  create_view "user_scores", sql_definition: <<-SQL
+      WITH prediction_scores AS (
+           SELECT p_1.id AS prediction_id,
+                  CASE
+                      WHEN (((mr_1.status)::text = 'finished'::text) AND (p_1.choice IS NOT NULL)) THEN true
+                      ELSE false
+                  END AS completed,
+                  CASE
+                      WHEN (((mr_1.status)::text = 'finished'::text) AND ((p_1.choice)::text = mr_1.winning_side)) THEN true
+                      ELSE false
+                  END AS correct,
+                  CASE
+                      WHEN (((mr_1.status)::text = 'finished'::text) AND ((p_1.choice)::text = mr_1.winning_side)) THEN mr_1.points
+                      ELSE 0
+                  END AS prediction_score
+             FROM (predictions p_1
+               LEFT JOIN match_results mr_1 ON ((mr_1.match_id = p_1.match_id)))
+          )
+   SELECT u.id AS user_id,
+      mr.competition_id,
+      sum(ps.prediction_score) AS score,
+      count(ps.prediction_id) AS total_predictions,
+      count(
+          CASE
+              WHEN ps.completed THEN 1
+              ELSE NULL::integer
+          END) AS completed_predictions,
+      count(
+          CASE
+              WHEN ps.correct THEN 1
+              ELSE NULL::integer
+          END) AS correct_predictions,
+          CASE
+              WHEN (count(
+              CASE
+                  WHEN ps.completed THEN 1
+                  ELSE NULL::integer
+              END) > 0) THEN (((count(
+              CASE
+                  WHEN ps.correct THEN 1
+                  ELSE NULL::integer
+              END))::numeric * 1.0) / (count(
+              CASE
+                  WHEN ps.completed THEN 1
+                  ELSE NULL::integer
+              END))::numeric)
+              ELSE NULL::numeric
+          END AS accuracy
+     FROM (((users u
+       LEFT JOIN predictions p ON ((p.user_id = u.id)))
+       LEFT JOIN prediction_scores ps ON ((ps.prediction_id = p.id)))
+       LEFT JOIN match_results mr ON ((mr.match_id = p.match_id)))
+    GROUP BY u.id, mr.competition_id
+    ORDER BY u.id;
+  SQL
+  create_view "leaderboard_rankings", sql_definition: <<-SQL
+      SELECT l.id AS leaderboard_id,
+      l.competition_id,
+      us.user_id,
+      us.score,
+      us.accuracy,
+      us.completed_predictions,
+      rank() OVER (PARTITION BY l.id ORDER BY us.score DESC, us.accuracy DESC, us.completed_predictions DESC) AS user_rank
+     FROM (leaderboards l
+       JOIN user_scores us ON ((us.competition_id = l.competition_id)))
+    GROUP BY l.id, us.user_id, us.score, us.accuracy, us.completed_predictions;
+  SQL
 end

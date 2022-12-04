@@ -35,10 +35,12 @@ gem 'omniauth'
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
+gem 'progress_bar'
 gem 'pundit'
 gem 'rexml'
 gem 'scout_apm'
 gem 'sidekiq', '~> 5.0.4'
+gem 'scenic'
 gem 'sidekiq-failures', '~> 1.0'
 gem 'watir', '6.16.5'
 gem 'webdrivers'
