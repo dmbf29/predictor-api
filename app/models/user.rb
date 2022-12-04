@@ -25,8 +25,16 @@ class User < ApplicationRecord
   def score(competition)
     # TODO: user predictions should be scoped by competition => prediction -> match -> group -> round -> competition
     # predictions.where(competition: competition).count(&:correct?) * 3
-    competition.predictions.includes(match: [:round, :group]).where(user: self).sum do |prediction|
-      prediction.correct? ? prediction.match.round.points : 0
+    cache_key = "#{cache_key_with_version}-score-#{competition.id}"
+    cached_score = Rails.cache.read(cache_key)
+    if run_score_query?({cached_score: cached_score, competition: competition})
+      puts_query_message("score", cache_key)
+      score_query_result = execute_score_query(competition)
+      Rails.cache.write("#{cache_key_with_version}-score-#{competition.id}", score_query_result)
+      return score_query_result
+    else
+      puts_cache_message("score", cache_key)
+      return cached_score
     end
   end
 
@@ -37,6 +45,57 @@ class User < ApplicationRecord
   end
 
   def matches(competition: nil)
+    cache_key = "#{cache_key_with_version}-matches"
+    cached_matches = Rails.cache.read(cache_key)&.to_a
+    if run_matches_query?(cached_result: cached_matches, competition: competition)
+      puts_query_message("matches", cache_key)
+      matches_query_result = execute_matches_query(competition: competition).to_a
+      Rails.cache.write("#{cache_key_with_version}-matches", matches_query_result)
+      return matches_query_result
+    else
+      puts_cache_message("matches", cache_key)
+      return cached_matches
+    end
+  end
+
+  private
+
+  def puts_cache_message(query_type, key)
+    puts "using cached #{query_type} for user #{id} - cache key: #{key}"
+  end
+
+  def puts_query_message(query_type, key)
+    puts "running #{query_type} query for user #{id} - cache key: #{key}"
+  end
+
+  def run_score_query?(attributes = {})
+    attributes[:cached_score].nil? || score_needs_recalculating?(competition: attributes[:competition])
+  end
+
+  # if matches have been played since the last cache was written, recalculate the score
+  def score_needs_recalculating?(attributes = {})
+    
+    expire_matches_cache?(cached_matches: matches(competition: attributes[:competition]), competition: attributes[:competition])
+  end
+
+  # run query if cache is empty or if the next upcoming match is in the past
+  def run_matches_query?(attributes = {})
+    attributes[:cached_result].nil? || expire_matches_cache?({competition: attributes[:competition], cached_matches: attributes[:cached_result]})
+  end
+
+  # this returns false if matches have been played since the last cache was written
+  def expire_matches_cache?(attributes = {})
+    matches_last_updated_at_according_to_cache = attributes[:cached_matches].max { |match| match['updated_at'] }['updated_at']
+    matches_last_updated_at_according_to_cache > (attributes[:competition]&.matches || Match).maximum(:updated_at)
+  end
+
+  def execute_score_query(competition)
+    competition.predictions.includes(match: [:round, :group]).where(user: self).sum do |prediction|
+        prediction.correct? ? prediction.match.round.points : 0
+    end
+  end
+
+  def execute_matches_query(competition: nil)
     query = <<-SQL.freeze
     WITH predictions AS (
       SELECT *
@@ -92,4 +151,5 @@ class User < ApplicationRecord
     SQL
     User.execute_sql(query, user_id: id, competition_id: competition&.id)
   end
+
 end
