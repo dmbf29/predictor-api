@@ -10,24 +10,16 @@ class User < ApplicationRecord
   # has_many :competitions, through: :leaderboards
   has_many :predictions, dependent: :destroy
   has_many :matches, through: :predictions
+
+  # Scenic views
+  has_many :scores, class_name: 'UserScore'
+  has_many :match_results
+  has_many :leaderboard_rankings
+
   validates :name, presence: true, on: :update, if: :name_changed?
 
   def display_name
     name || email.split('@').first
-  end
-
-  def score(competition)
-    # TODO: user predictions should be scoped by competition => prediction -> match -> group -> round -> competition
-    # predictions.where(competition: competition).count(&:correct?) * 3
-    competition.predictions.includes(match: [:round, :group]).where(user: self).sum do |prediction|
-      prediction.correct? ? prediction.match.round.points : 0
-    end
-  end
-
-  def possible_score(competition)
-    competition.matches.where(status: 'finished').sum do |match|
-      match.round.points
-    end
   end
 
   def matches(competition: nil)

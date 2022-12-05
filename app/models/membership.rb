@@ -3,7 +3,8 @@ class Membership < ApplicationRecord
   belongs_to :user
   has_one :competition, through: :leaderboard
   validates_uniqueness_of :user, scope: :leaderboard
-  after_destroy :update_leaderboard_ownership
+  after_destroy :update_leaderboard_ownership, :refresh_materialized_views
+  after_create :refresh_materialized_views
 
   private
 
@@ -11,5 +12,10 @@ class Membership < ApplicationRecord
     return unless user == leaderboard.user
     
     leaderboard.memberships.any? ? leaderboard.transfer_ownership : leaderboard.destroy
+  end
+
+  def refresh_materialized_views
+    UserScore.refresh
+    LeaderboardRanking.refresh
   end
 end

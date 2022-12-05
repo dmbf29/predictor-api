@@ -1,4 +1,4 @@
-class MatchResult < ActiveRecord::Base
+class MatchResult < ScenicViewRecord
   belongs_to :match
   belongs_to :group, optional: true
   belongs_to :round
@@ -6,4 +6,6 @@ class MatchResult < ActiveRecord::Base
   belongs_to :team_home, class_name: 'Team'
   belongs_to :team_away, class_name: 'Team'
   belongs_to :winner, class_name: 'Team', optional: true
+
+  enum status: { upcoming: 'upcoming', started: 'started', finished: 'finished' }
 end

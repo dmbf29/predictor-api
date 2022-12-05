@@ -1,7 +1,7 @@
 class V1::LeaderboardsController < ApplicationController
   def index
     @competition = Competition.find(params[:competition_id])
-    @leaderboards = policy_scope(Leaderboard).includes(:users, locked_predictions: { match: { group: :round } })
+    @leaderboards = policy_scope(Leaderboard).includes(:match_results, rankings: %i[user])
                                              .where(competition: @competition)
   end
 

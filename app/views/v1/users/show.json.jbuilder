@@ -1,3 +1,3 @@
 json.partial! @user
-json.points @user.score(@competition) if @competition
-json.possible_points @user.possible_score(@competition) if @competition
+json.points @user.scores.where(competition: @competition).score if @competition
+json.possible_points @competition.max_possible_score if @competition

@@ -3,6 +3,7 @@ WITH prediction_scores AS (
 		DISTINCT p.id AS prediction_id,
 		p.user_id,
 		p.match_id,
+		r.points,
 		mr.competition_id,
 		(
 			CASE
@@ -24,6 +25,7 @@ WITH prediction_scores AS (
 		) AS prediction_score
 	FROM predictions p
 	LEFT JOIN match_results mr ON mr.match_id = p.match_id
+	LEFT JOIN rounds r ON r.id = mr.round_id
 ), prediction_numbers AS (
 	SELECT
 		u.id AS user_id,
@@ -52,6 +54,7 @@ SELECT DISTINCT ON (ps.user_id, ps.competition_id)
 	ps.user_id,
 	ps.competition_id,
 	pn.score,
+	pn.completed_predictions * ps.points AS max_possible_score,
 	pn.total_predictions,
 	pn.completed_predictions,
 	pn.correct_predictions,

@@ -1,27 +1,7 @@
-WITH match_rounds AS (
-	SELECT 
-		m.id AS match_id,
-		(
-			CASE
-			WHEN m.round_id IS NOT NULL THEN m.round_id 
-			ELSE g.round_id
-			END
-		) AS round_id,
-		(
-			CASE
-			WHEN m.round_id IS NOT NULL THEN mr.competition_id  
-			ELSE gr.competition_id 
-			END
-		) AS competition_id
-	FROM matches m
-	LEFT JOIN groups g ON m.group_id = g.id
-	LEFT JOIN rounds mr ON m.round_id = mr.id
-	LEFT JOIN rounds gr ON g.round_id = gr.id
-)
 SELECT
 	matches.id AS match_id,
-	mr.round_id,
-	r.competition_id,
+	matches.round_id,
+	matches.competition_id,
 	l.id AS leaderboard_id,
 	matches.status,
 	matches.group_id,
@@ -53,7 +33,6 @@ SELECT
 	ARRAY(SELECT user_id FROM predictions p JOIN matches m ON m.id = p.match_id WHERE m.id = matches.id AND p.choice = 'draw') as predicted_draw,
 	ARRAY(SELECT user_id FROM predictions p JOIN matches m ON m.id = p.match_id WHERE m.id = matches.id AND p.choice = 'away') as predicted_away
 FROM matches
-JOIN match_rounds mr ON mr.match_id = matches.id
-JOIN rounds r ON mr.round_id = r.id
-JOIN leaderboards l ON l.competition_id = mr.competition_id
+JOIN rounds r ON matches.round_id = r.id
+JOIN leaderboards l ON l.competition_id = matches.competition_id
 ORDER BY matches.id
