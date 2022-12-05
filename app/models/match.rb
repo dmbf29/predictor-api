@@ -19,40 +19,6 @@ class Match < ApplicationRecord
   before_validation :set_round_and_competition, on: :create
   after_commit :refresh_materialized_views, on: :update
 
-  def draw?
-    return unless finished?
-
-    team_home_score == team_away_score &&
-    team_home_et_score == team_away_et_score &&
-    team_home_ps_score == team_away_ps_score
-  end
-
-  def winner
-    return unless finished?
-    return if draw?
-
-    winner_side == 'home' ? team_home : team_away
-  end
-
-  def extra_time?
-    team_home_et_score.present? && team_away_et_score.present?
-  end
-
-  def penalties?
-    team_home_ps_score.present? && team_away_ps_score.present?
-  end
-
-  def winner_side
-    return unless finished?
-    return 'draw' if draw?
-
-    home_wins = team_home_score > team_away_score
-    home_wins = team_home_et_score > team_away_et_score if extra_time?
-    home_wins = team_home_ps_score > team_away_ps_score if penalties?
-
-    home_wins ? 'home' : 'away'
-  end
-
   private
 
   def set_round_and_competition
