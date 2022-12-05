@@ -54,6 +54,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'bullet'
   gem 'letter_opener'
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring

@@ -309,8 +309,9 @@ ActiveRecord::Schema.define(version: 2022_12_04_153322) do
       us.correct_predictions,
       us.accuracy,
       rank() OVER (PARTITION BY l.id ORDER BY us.score DESC, us.accuracy DESC, us.completed_predictions DESC) AS user_rank
-     FROM (leaderboards l
-       JOIN user_scores us ON ((us.competition_id = l.competition_id)))
+     FROM ((leaderboards l
+       JOIN memberships m ON ((m.leaderboard_id = l.id)))
+       JOIN user_scores us ON (((us.user_id = m.user_id) AND (us.competition_id = l.competition_id))))
     ORDER BY (rank() OVER (PARTITION BY l.id ORDER BY us.score DESC, us.accuracy DESC, us.completed_predictions DESC)), us.score, us.accuracy, us.completed_predictions;
   SQL
 end

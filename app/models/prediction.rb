@@ -10,12 +10,6 @@ class Prediction < ApplicationRecord
 
   after_commit :refresh_materialized_views
 
-  def correct?
-    return unless match.finished?
-
-    choice == match.winner_side
-  end
-
   private
 
   def refresh_materialized_views

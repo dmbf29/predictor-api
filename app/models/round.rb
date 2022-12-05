@@ -9,6 +9,6 @@ class Round < ApplicationRecord
   private
 
   def set_points
-    self.points = number + 2
+    self.points ||= number + 2
   end
 end

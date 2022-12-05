@@ -25,9 +25,9 @@ json.array! @matches do |match|
       json.ps_score match.team_away_ps_score
     end
   end
-  if match.predictions.exists?(user: @user)
+  prediction = match.predictions.find_by(user: @user)
+  if prediction.present?
     json.prediction do
-      prediction = match.predictions.find_by(user: @user)
       json.id prediction.id
       json.choice prediction.choice
       json.user_id prediction.user_id

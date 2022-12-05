@@ -13,12 +13,10 @@ class User < ApplicationRecord
 
   # Scenic views
   has_many :scores, class_name: 'UserScore'
-  has_many :match_results
-  has_many :leaderboard_rankings
 
   validates :name, presence: true, on: :update, if: :name_changed?
 
-  def display_name
-    name || email.split('@').first
+  def name
+    super || email.split('@').first
   end
 end

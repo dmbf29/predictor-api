@@ -1,5 +1,5 @@
 json.user_id ranking.user_id
-json.name ranking.user.display_name
+json.name ranking.user.name
 json.photo_key ranking.user.photo_key
 json.points ranking.score
 json.total_predictions ranking.total_predictions
