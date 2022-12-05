@@ -4,9 +4,8 @@ class AddCompetitionAndRoundToMatches < ActiveRecord::Migration[6.1]
 
     Match.reset_column_information
     Match.find_each do |match|
-      match.round ||= match.group&.round
-      match.competition ||= match.round&.competition
-      match.save!(validate: false)
+      match.update_columns(round_id: match.group.round.id) if match.round.blank?
+      match.update_columns(competition_id: match.round.competition.id) if match.competition.blank?
     end
 
     change_column_null :matches, :competition_id, false

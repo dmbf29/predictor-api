@@ -1,3 +1,10 @@
+WITH leaderboard_users AS (
+	SELECT
+		leaderboards.id,
+		mb.user_id
+	FROM leaderboards
+	JOIN memberships mb ON mb.leaderboard_id = leaderboards.id
+)
 SELECT
 	matches.id AS match_id,
 	matches.round_id,
@@ -29,9 +36,9 @@ SELECT
 	r.number AS round_number,
 	r.points AS points,
 	r.name AS round_name,
-	ARRAY(SELECT user_id FROM predictions p JOIN matches m ON m.id = p.match_id WHERE m.id = matches.id AND p.choice = 'home') as predicted_home,
-	ARRAY(SELECT user_id FROM predictions p JOIN matches m ON m.id = p.match_id WHERE m.id = matches.id AND p.choice = 'draw') as predicted_draw,
-	ARRAY(SELECT user_id FROM predictions p JOIN matches m ON m.id = p.match_id WHERE m.id = matches.id AND p.choice = 'away') as predicted_away
+	ARRAY(SELECT DISTINCT p.user_id FROM predictions p WHERE p.match_id = matches.id AND p.user_id IN (SELECT user_id FROM leaderboard_users lu WHERE lu.id = l.id) AND p.choice = 'home') as predicted_home,
+	ARRAY(SELECT DISTINCT p.user_id FROM predictions p WHERE p.match_id = matches.id AND p.user_id IN (SELECT user_id FROM leaderboard_users lu WHERE lu.id = l.id) AND p.choice = 'draw') as predicted_draw,
+	ARRAY(SELECT DISTINCT p.user_id FROM predictions p WHERE p.match_id = matches.id AND p.user_id IN (SELECT user_id FROM leaderboard_users lu WHERE lu.id = l.id) AND p.choice = 'away') as predicted_away
 FROM matches
 JOIN rounds r ON matches.round_id = r.id
 JOIN leaderboards l ON l.competition_id = matches.competition_id

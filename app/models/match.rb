@@ -17,7 +17,7 @@ class Match < ApplicationRecord
   has_many :results, class_name: 'MatchResult'
 
   before_validation :set_round_and_competition, on: :create
-  after_update :refresh_materialized_views
+  after_commit :refresh_materialized_views, on: :update
 
   def draw?
     return unless finished?
