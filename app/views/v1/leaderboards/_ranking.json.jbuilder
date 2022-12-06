@@ -1,0 +1,9 @@
+json.user_id ranking.user_id
+json.name ranking.user.name
+json.photo_key ranking.user.photo_key
+json.points ranking.score
+json.total_predictions ranking.total_predictions
+json.completed_predictions ranking.completed_predictions
+json.correct_predictions ranking.correct_predictions
+json.accuracy ranking.accuracy
+json.rank ranking.user_rank

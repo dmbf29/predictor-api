@@ -1,7 +1,7 @@
 class LeaderboardPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      user.leaderboards
+      scope.joins(:memberships).where(memberships: { user: user })
     end
   end
 

@@ -6,6 +6,6 @@ class MembershipPolicy < ApplicationPolicy
   end
 
   def create?
-    record.leaderboard.user != user
+    true
   end
 end

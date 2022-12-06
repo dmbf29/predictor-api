@@ -4,11 +4,16 @@ class Prediction < ApplicationRecord
   belongs_to :user
   validates_uniqueness_of :user, scope: :match
   validates :choice, presence: true
-  enum choice: %i[home away draw]
+  enum choice: { home: 'home', away: 'away', draw: 'draw' }
 
-  def correct?
-    return unless match.finished?
+  scope :locked, -> { joins(:match).where.not(matches: { status: :upcoming }) }
 
-    choice == match.winner_side
+  after_commit :refresh_materialized_views
+
+  private
+
+  def refresh_materialized_views
+    UserScore.refresh
+    LeaderboardRanking.refresh
   end
 end
