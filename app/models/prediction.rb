@@ -9,11 +9,4 @@ class Prediction < ApplicationRecord
   scope :locked, -> { joins(:match).where.not(matches: { status: :upcoming }) }
 
   after_commit :refresh_materialized_views
-
-  private
-
-  def refresh_materialized_views
-    UserScore.refresh
-    LeaderboardRanking.refresh
-  end
 end
