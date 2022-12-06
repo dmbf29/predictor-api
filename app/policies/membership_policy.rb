@@ -8,4 +8,8 @@ class MembershipPolicy < ApplicationPolicy
   def create?
     true
   end
+
+  def destroy?
+    record.user == user && !record.leaderboard.leave_disabled?
+  end
 end

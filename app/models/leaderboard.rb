@@ -14,6 +14,8 @@ class Leaderboard < ApplicationRecord
   after_create :create_owner_membership
   after_commit :refresh_materialized_views
 
+  scope :auto_join, -> { where(auto_join: true) }
+
   def transfer_ownership
     membership = memberships.first
     membership.destroy
