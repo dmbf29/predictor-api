@@ -17,13 +17,15 @@ class MatchUpdateHistoryJob < ApplicationJob
     response = HTTParty.get(url).body
     parsed_response = JSON.parse(response)['data']
     matches = parsed_response['match']
-    matches.each do |match_info|
-      kickoff_time = DateTime.parse("#{match_info['date']} #{match_info['scheduled']}")
-      puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']} (#{kickoff_time})"
-      match = competition.matches.find_by(api_id: match_info['fixture_id']) || competition.matches.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']), kickoff_time: kickoff_time)
-      next unless match
+    DatabaseViews.run_without_callback(then_refresh: true) do
+      matches.each do |match_info|
+        kickoff_time = DateTime.parse("#{match_info['date']} #{match_info['scheduled']}")
+        puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']} (#{kickoff_time})"
+        match = competition.matches.find_by(api_id: match_info['fixture_id']) || competition.matches.find_by(team_home: get_team(match_info['home_id']), team_away: get_team(match_info['away_id']), kickoff_time: kickoff_time)
+        next unless match
 
-      match.update_with_api(match_info)
+        match.update_with_api(match_info)
+      end
     end
     return parsed_response['next_page']
   end

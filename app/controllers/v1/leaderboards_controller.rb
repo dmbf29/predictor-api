@@ -22,6 +22,7 @@ class V1::LeaderboardsController < ApplicationController
     @leaderboard = Leaderboard.find(params[:id])
     authorize @leaderboard
     membership = @leaderboard.memberships.find_by!(user: current_user)
+    authorize membership
     membership.destroy
     head :no_content
   end

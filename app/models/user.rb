@@ -16,7 +16,19 @@ class User < ApplicationRecord
 
   validates :name, presence: true, on: :update, if: :name_changed?
 
+  after_create :auto_join_leaderboards
+
   def name
     super || email.split('@').first
+  end
+
+  private
+
+  def auto_join_leaderboards
+    DatabaseViews.run_without_callback(then_refresh: true) do
+      Leaderboard.auto_join.each do |leaderboard|
+        leaderboard.memberships.create(user: self)
+      end
+    end
   end
 end
