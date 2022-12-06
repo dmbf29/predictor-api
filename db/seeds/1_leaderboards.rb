@@ -1,5 +1,11 @@
 LEADERBOARDS = [
-  { name: 'Global Ranking', rankings_top_n: 10, leave_disabled: true, auto_join: true }
+  {
+    name: 'Global Top 10',
+    description: 'The Top 10 players on Octacle',
+    rankings_top_n: 10,
+    leave_disabled: true,
+    auto_join: true,
+  }
 ]
 
 admin = User.find_by(email: 'trouni@gmail.com')

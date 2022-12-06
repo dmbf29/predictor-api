@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2022_12_05_114427) do
     t.bigint "competition_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "description"
     t.boolean "auto_join", default: false, null: false
     t.boolean "leave_disabled", default: false, null: false
     t.integer "rankings_top_n"
