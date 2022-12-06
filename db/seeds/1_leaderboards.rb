@@ -10,6 +10,8 @@ LEADERBOARDS = [
 
 admin = User.find_by(email: 'trouni@gmail.com')
 
+DatabaseViews.deactivate_callback
+
 puts '-----> Seeding auto-join leaderboards...'
 LEADERBOARDS.each do |leaderboard_hash|
   Competition.find_each do |competition|
@@ -26,3 +28,5 @@ LEADERBOARDS.each do |leaderboard_hash|
     end
   end
 end
+
+DatabaseViews.activate_callback(then_refresh: true)

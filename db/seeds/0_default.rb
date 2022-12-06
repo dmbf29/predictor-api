@@ -1,4 +1,7 @@
 require 'open-uri'
+
+DatabaseViews.deactivate_callback
+
 Leaderboard.destroy_all
 
 puts 'Getting Admin users...'
@@ -120,3 +123,5 @@ ScrapeMatchesService.new.call
 # # Needed when migrating status enum from integer to string:
 # Match.where('kickoff_time >= ?', Date.new(2021, 6, 22)).update(status: :upcoming)
 # puts "...#{Match.finished.count} Finished Matches and #{Match.upcoming.count} Upcoming Matches"
+
+DatabaseViews.activate_callback(then_refresh: true)
