@@ -35,10 +35,12 @@ gem 'omniauth'
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
+gem 'progress_bar'
 gem 'pundit'
 gem 'rexml'
 gem 'scout_apm'
 gem 'sidekiq', '~> 5.0.4'
+gem 'scenic'
 gem 'sidekiq-failures', '~> 1.0'
 gem 'watir', '6.16.5'
 gem 'webdrivers'
@@ -52,6 +54,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'bullet'
   gem 'letter_opener'
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
