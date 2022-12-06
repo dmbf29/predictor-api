@@ -1,19 +1,19 @@
-class MatchUpdateHistoryJob < ApplicationJob
+class MatchUpdateLiveJob < ApplicationJob
   queue_as :default
 
   def perform(competition_id)
     competition = Competition.find(competition_id)
-    url_to_update = LiveScoreApi.matches_history_url(competition.api_id)
-    while url_to_update
-      url_to_update = update_matches_history(url_to_update, competition)
-    end
+    url_to_update = LiveScoreApi.matches_live_url(competition.api_id)
+    update_matches_live(url_to_update, competition)
   end
 
   def get_team(id)
     Team.find_by(api_id: id)
   end
 
-  def update_matches_history(url, competition)
+  def update_matches_live(url, competition)
+    # To test it locally, switch out the response:
+    # response = File.open('db/live_score_example.json').read
     response = HTTParty.get(url).body
     parsed_response = JSON.parse(response)['data']
     matches = parsed_response['match']
@@ -25,6 +25,5 @@ class MatchUpdateHistoryJob < ApplicationJob
 
       match.update_with_api(match_info)
     end
-    return parsed_response['next_page']
   end
 end

@@ -120,6 +120,7 @@ namespace :competition do
     competitions.each do |competition|
       MatchUpdateFutureJob.perform_later(competition.id)
       MatchUpdateHistoryJob.perform_later(competition.id)
+      MatchUpdateLiveJob.perform_later(competition.id)
     end
   end
 
