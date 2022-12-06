@@ -12,6 +12,7 @@ class Leaderboard < ApplicationRecord
   validates :name, presence: true
   has_secure_token :password
   after_create :create_owner_membership
+  after_commit :refresh_materialized_views
 
   def transfer_ownership
     membership = memberships.first

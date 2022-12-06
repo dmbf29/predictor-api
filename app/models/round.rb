@@ -5,6 +5,7 @@ class Round < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :competition }
 
   before_validation :set_points, on: :create
+  after_commit :refresh_materialized_views
 
   private
 

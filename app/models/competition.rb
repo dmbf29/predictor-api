@@ -13,6 +13,8 @@ class Competition < ApplicationRecord
   validates :end_date, presence: true
   scope :on_going, -> { where('start_date < :start AND end_date > :end', start: Date.today + 1, end: Date.today - 1) }
 
+  after_commit :refresh_materialized_views
+
   def max_possible_score
     matches.finished.joins(:round).sum('rounds.points')
   end

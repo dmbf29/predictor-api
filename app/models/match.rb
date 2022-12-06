@@ -17,19 +17,12 @@ class Match < ApplicationRecord
   has_many :results, class_name: 'MatchResult'
 
   before_validation :set_round_and_competition, on: :create
-  after_commit :refresh_materialized_views, on: :update
+  after_commit :refresh_materialized_views
 
   private
 
   def set_round_and_competition
     self.round ||= group&.round
     self.competition ||= round&.competition
-  end
-
-  def refresh_materialized_views
-    # The materialized views need to be refreshed in this order
-    MatchResult.refresh
-    UserScore.refresh
-    LeaderboardRanking.refresh
   end
 end
