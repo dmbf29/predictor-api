@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: 'auth', controllers: {
-    sessions: 'auth/devise_token_auth/sessions',
-    registrations: 'auth/devise_token_auth/registrations',
+    sessions: 'auth/devise_token_auth/sessions'
   }
 
   # Sidekiq Web UI, only for admins.
