@@ -18,9 +18,11 @@ class ScrapeMatchesService
   end
 
   def call
-    @browser = Watir::Browser.new :chrome, args: %w[--headless --no-sandbox --disable-dev-shm-usage --disable-gpu --remote-debugging-port=9222]
-    urls.each do |url|
-      scrape(url)
+    DatabaseViews.run_without_callback(then_refresh: true) do
+      @browser = Watir::Browser.new :chrome, args: %w[--headless --no-sandbox --disable-dev-shm-usage --disable-gpu --remote-debugging-port=9222]
+      urls.each do |url|
+        scrape(url)
+      end
     end
   end
 

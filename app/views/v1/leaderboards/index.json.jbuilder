@@ -1,6 +1,8 @@
 json.array! @leaderboards do |leaderboard|
   json.partial! leaderboard
-  json.users leaderboard.rankings do |ranking|
+  rankings = leaderboard.rankings.order(:user_rank)
+  rankings = rankings.first(leaderboard.rankings_top_n) if leaderboard.rankings_top_n
+  json.users rankings do |ranking|
     json.partial! 'v1/leaderboards/ranking', ranking: ranking
   end
   json.results do

@@ -9,6 +9,7 @@ class ScrapePhotoService
   end
 
   def call
+    DatabaseViews.deactivate_callback
     url = "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/qatar2022/teams/#{competition.teams.sample.name.split.join('-').downcase}/squad"
     browser = Watir::Browser.new :chrome, options: { args: %w[--headless --no-sandbox --disable-dev-shm-usage --disable-gpu --remote-debugging-port=9222] }
     browser.goto url
@@ -28,5 +29,6 @@ class ScrapePhotoService
     user.save
     # TODO: Most likely the ending numbers and names might change...
     # document.querySelectorAll('main section')[2].querySelectorAll('.entire-squad_container__3W4Hl')[3].querySelectorAll('.player-badge-card_playerImage__301X0')[0].style.backgroundImage
+    DatabaseViews.activate_callback
   end
 end

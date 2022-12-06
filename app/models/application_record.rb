@@ -12,9 +12,6 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def refresh_materialized_views
-    # The materialized views need to be refreshed in this order
-    MatchResult.refresh
-    UserScore.refresh
-    LeaderboardRanking.refresh
+    DatabaseViews.refresh(async: true)
   end
 end
