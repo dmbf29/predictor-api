@@ -7,10 +7,12 @@ class Competition < ApplicationRecord
   has_many :teams, through: :affiliations
   has_many :leaderboards, dependent: :destroy
   has_many :predictions, through: :matches, dependent: :destroy
+  has_many :users, through: :leaderboards, source: :users
 
   validates :name, presence: true, uniqueness: { scope: :start_date}
   validates :start_date, presence: true
   validates :end_date, presence: true
+
   scope :on_going, -> { where('start_date < :start AND end_date > :end', start: Date.today + 1, end: Date.today - 1) }
 
   after_commit :refresh_materialized_views

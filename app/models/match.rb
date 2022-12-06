@@ -19,6 +19,20 @@ class Match < ApplicationRecord
   before_validation :set_round_and_competition, on: :create
   after_commit :refresh_materialized_views
 
+  def update_with_api(match_info)
+    finished! if match_info['status'] == 'FINISHED'
+    started! if match_info['status'] == 'IN PLAY'
+    self.team_home_score, self.team_away_score = match_info['score']&.split(' - ')
+    self.team_home_et_score, self.team_away_et_score = match_info['et_score']&.split(' - ')
+    self.team_home_ps_score, self.team_away_ps_score = match_info['ps_score']&.split(' - ')
+    save
+
+    scores = ["FT Score > #{match_info['score']}"]
+    scores << "Extra-time > #{match_info['et_score']}" unless match_info['et_score']&.blank?
+    scores << "Penalties > #{match_info['ps_score']}" unless match_info['ps_score']&.blank?
+    puts "Match Update:\n#{scores.join("\n")}"
+  end
+
   private
 
   def set_round_and_competition
