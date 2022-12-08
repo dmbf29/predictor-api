@@ -11,6 +11,7 @@ class Match < ApplicationRecord
   validates :status, presence: true
   validates :api_id, uniqueness: { allow_nil: true }
   validates_uniqueness_of :kickoff_time, scope: %i[team_home team_away]
+  validate :check_team_and_day_uniqueness
   enum status: { upcoming: 'upcoming', started: 'started', finished: 'finished' }, _default: :upcoming
 
   # Scenic views
@@ -18,6 +19,12 @@ class Match < ApplicationRecord
 
   before_validation :set_round_and_competition, on: :create
   after_commit :refresh_materialized_views
+
+  def check_team_and_day_uniqueness
+    if Match.where(team_away: team_away, team_home: team_home).find_by("kickoff_time::date = ?", kickoff_time.to_date)
+      errors.add(:kickoff_time, "isn't available on this date")
+    end
+  end
 
   def update_with_api(match_info)
     finished! if match_info['status'] == 'FINISHED'
