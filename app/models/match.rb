@@ -21,7 +21,7 @@ class Match < ApplicationRecord
   after_commit :refresh_materialized_views
 
   def check_team_and_day_uniqueness
-    if Match.where(team_away: team_away, team_home: team_home).find_by("kickoff_time::date = ?", kickoff_time.to_date)
+    if Match.where(team_away: team_away, team_home: team_home).where.not(id: self).find_by("kickoff_time::date = ?", kickoff_time.to_date)
       errors.add(:kickoff_time, "isn't available on this date")
     end
   end
