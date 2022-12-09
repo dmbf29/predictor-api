@@ -33,7 +33,6 @@ class MatchUpdateFutureJob < ApplicationJob
           match.group = @competition.groups.find_by(api_id: match_info["group_id"])
         else
           match.round = @competition.rounds.find_by(api_name: match_info['round'])
-          match.round = @competition.rounds.find_by(api_name: match_info['round'])
         end
         match.api_id = match_info['id']
         match.location = match_info['location']
