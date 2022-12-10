@@ -17,9 +17,15 @@ class MatchUpdateFutureJob < ApplicationJob
       matches.each do |match_info|
         kickoff_time = DateTime.parse("#{match_info['date']} #{match_info['time']}")
         puts "Finding the match between : #{match_info['home_name']} v #{match_info['away_name']} (#{kickoff_time})"
-        match = @competition.matches.find_by(api_id: match_info['id']) || Match.new
-        match.team_home ||= Team.find_by(api_id: match_info['home_id'])
-        match.team_away ||= Team.find_by(api_id: match_info['away_id'])
+        # The API gives duplicate matches with different IDs, so need to find by day and teams
+        # match = @competition.matches.find_by(api_id: match_info['id']) || Match.new
+        team_home = Team.find_by(api_id: match_info['home_id'])
+        team_away = Team.find_by(api_id: match_info['away_id'])
+        match =
+          @competition.matches.where(team_home: team_home, team_away: team_away)
+                      .find_by('kickoff_time::date = ?', match_info['date']) || Match.new
+        match.team_home ||= team_home
+        match.team_away ||= team_away
         next unless match.team_home && match.team_away # knock-out rounds with no teams yet
 
         # Only adding a round for knockout stages, group isn't provided by API :/
