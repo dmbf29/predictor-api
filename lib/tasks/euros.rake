@@ -120,6 +120,8 @@ namespace :euros do
     Membership.find_or_create_by!(leaderboard: leaderboard, user: james)
     Membership.find_or_create_by!(leaderboard: leaderboard, user: renato)
     Membership.find_or_create_by!(leaderboard: leaderboard, user: caio)
+
+    AttachFlagsJob.perform_now(euros.id)
   end
 
 end
