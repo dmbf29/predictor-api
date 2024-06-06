@@ -38,6 +38,9 @@ class MatchUpdateJob < ApplicationJob
         match.kickoff_time = kickoff_time
         match.save
         p match.errors.full_messages if match.errors.any?
+
+        # Update scores
+        match.update_with_api(match_info)
         puts 'Match Update'
       end
     end
