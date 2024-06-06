@@ -90,8 +90,8 @@ namespace :euros do
     # Calling the API to create the matches
     MatchUpdateJob.perform_now(euros.id)
 
-    # TODO: this only works when there are matches
-    puts "...#{euros.rounds.count} Total Teams"
+    # TODO: this only works when there are matches so you'll see 1 for now
+    puts "...#{euros.rounds.count} Total Round"
     puts "...#{euros.teams.count} Total Teams"
     puts "...#{euros.groups.count} Total Groups"
 
