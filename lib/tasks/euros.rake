@@ -77,9 +77,6 @@ namespace :euros do
     # Round.find_or_create_by!(name: 'Third Place', number: 5, competition: euros, api_name: '3PPO')
     Round.find_or_create_by!(name: 'Final', number: 6, competition: euros, api_name: 'FINAL')
 
-    # TODO: this only works when there are matches
-    puts "...#{euros.rounds.count} Total Rounds"
-
     puts 'Creating or finding groups...'
     groups.each_key do |group_name|
       puts "...#{group_name}..."
@@ -90,7 +87,11 @@ namespace :euros do
         Affiliation.find_or_create_by!(team: team, group: group)
       end
     end
+    # Calling the API to create the matches
+    MatchUpdateJob.perform_now(euros.id)
+
     # TODO: this only works when there are matches
+    puts "...#{euros.rounds.count} Total Teams"
     puts "...#{euros.teams.count} Total Teams"
     puts "...#{euros.groups.count} Total Groups"
 
