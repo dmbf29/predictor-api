@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_05_114427) do
+ActiveRecord::Schema.define(version: 2024_06_06_050948) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -61,6 +60,7 @@ ActiveRecord::Schema.define(version: 2022_12_05_114427) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "current_round_id"
     t.integer "api_id"
+    t.string "api_code"
     t.index ["current_round_id"], name: "index_competitions_on_current_round_id"
   end
 
