@@ -4,6 +4,7 @@ namespace :euros do
     groups = {
       'Group A' => {
         api_id: nil,
+        api_code: 'GROUP_A',
         teams: [
           { name: 'Germany', abbrev: 'GER' },
           { name: 'Scotland', abbrev: 'SCO' },
@@ -13,6 +14,7 @@ namespace :euros do
       },
       'Group B' => {
         api_id: nil,
+        api_code: 'GROUP_B',
         teams: [
           { name: 'Albania', abbrev: 'ALB' },
           { name: 'Italy', abbrev: 'ITA' },
@@ -22,6 +24,7 @@ namespace :euros do
       },
       'Group C' => {
         api_id: nil,
+        api_code: 'GROUP_C',
         teams: [
           { name: 'Denmark', abbrev: 'DEN' },
           { name: 'England', abbrev: 'ENG' },
@@ -31,6 +34,7 @@ namespace :euros do
       },
       'Group D' => {
         api_id: nil,
+        api_code: 'GROUP_D',
         teams: [
           { name: 'France', abbrev: 'FRA' },
           { name: 'Netherlands', abbrev: 'NED' },
@@ -40,6 +44,7 @@ namespace :euros do
       },
       'Group E' => {
         api_id: nil,
+        api_code: 'GROUP_E',
         teams: [
           { name: 'Belgium', abbrev: 'BEL' },
           { name: 'Romania', abbrev: 'ROU' },
@@ -49,6 +54,7 @@ namespace :euros do
       },
       'Group F' => {
         api_id: nil,
+        api_code: 'GROUP_F',
         teams: [
           { name: 'Georgia', abbrev: 'GEO' },
           { name: 'Portugal', abbrev: 'POR' },
@@ -64,13 +70,20 @@ namespace :euros do
     puts 'Creating or finding first round...'
     first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: euros, api_name: 'GROUP_STAGE')
     euros.update!(current_round: first_round)
+    Round.find_or_create_by!(name: 'Round of 16', number: 2, competition: euros, api_name: 'LAST_16')
+    Round.find_or_create_by!(name: 'Quarter-finals', number: 3, competition: euros, api_name: 'QUARTER_FINALS')
+    Round.find_or_create_by!(name: 'Semi-finals', number: 4, competition: euros, api_name: 'SEMI_FINALS')
+    # TODO: Doesn't look like the API has the 3rd place playoff
+    # Round.find_or_create_by!(name: 'Third Place', number: 5, competition: euros, api_name: '3PPO')
+    Round.find_or_create_by!(name: 'Final', number: 6, competition: euros, api_name: 'FINAL')
+
     # TODO: this only works when there are matches
     puts "...#{euros.rounds.count} Total Rounds"
 
     puts 'Creating or finding groups...'
     groups.each_key do |group_name|
       puts "...#{group_name}..."
-      group = Group.find_or_create_by!(name: group_name, round: first_round, api_id: groups[group_name][:api_id])
+      group = Group.find_or_create_by!(name: group_name, round: first_round, api_id: groups[group_name][:api_id], api_code: groups[group_name][:api_code])
       groups[group_name][:teams].each do |team_hash|
         puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
         team = Team.find_or_create_by!(team_hash)
