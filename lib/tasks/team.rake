@@ -1,27 +1,9 @@
 namespace :team do
-  desc "Calls Live-Score API, saves API id and gets the flag"
+  desc "Calls Data-Football API and gets the flags"
   task add_flag: :environment do
-    competition_id = 362
-    season = 2022
-    response = HTTParty.get("https://livescore-api.com/api-client/competitions/participants.json?key=#{ENV['LIVE_SCORE_KEY']}&secret=#{ENV['LIVE_SCORE_SECRET']}&competition_id=#{competition_id}&season=#{season}").body
-    countries = JSON.parse(response)['data']
-
-    not_found = []
-    competition = Competition.find_by(api_id: competition_id)
-    competition.teams.find_each do |team|
-      country = countries.find { |country| country['name'] == team.name }
-      if country
-        team.api_id = country['id']
-        team.save
-        next if team.flag.attached? && team.badge.attached?
-
-        fetch_flag(team)
-      else
-        not_found << team.name
-      end
+    Competition.find_each do |competition|
+      AttachFlagsJob.perform_now(competition.id)
     end
-
-    puts not_found.any? ? "Teams not found: #{not_found.join(', ')}" : 'Found all teams'
   end
 
   def fetch_flag(team)
