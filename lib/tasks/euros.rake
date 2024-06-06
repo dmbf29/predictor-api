@@ -58,11 +58,13 @@ namespace :euros do
       },
     }
     puts 'Creating the Euros...'
-    euros = Competition.find_or_create_by(name: 'Euros 2024', start_date: Date.new(2024, 06, 14), end_date: Date.new(2024, 07, 14), api_id: 2018, api_code: 'EC')
+    euros = Competition.find_or_create_by!(name: 'Euros 2024', start_date: Date.new(2024, 06, 14), end_date: Date.new(2024, 07, 14), api_id: 2018, api_code: 'EC')
     puts '.. created the Euros'
 
     puts 'Creating or finding first round...'
-    first_round = Round.find_or_create_by(name: 'Group Stage', number: 1, competition: euros, api_name: 'GROUP_STAGE')
+    first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: euros, api_name: 'GROUP_STAGE')
+    euros.update!(current_round: first_round)
+    # TODO: this only works when there are matches
     puts "...#{euros.rounds.count} Total Rounds"
 
     puts 'Creating or finding groups...'
@@ -71,10 +73,11 @@ namespace :euros do
       group = Group.find_or_create_by!(name: group_name, round: first_round, api_id: groups[group_name][:api_id])
       groups[group_name][:teams].each do |team_hash|
         puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
-        team = Team.find_or_create_by(team_hash)
-        Affiliation.find_or_create_by(team: team, group: group)
+        team = Team.find_or_create_by!(team_hash)
+        Affiliation.find_or_create_by!(team: team, group: group)
       end
     end
+    # TODO: this only works when there are matches
     puts "...#{euros.teams.count} Total Teams"
     puts "...#{euros.groups.count} Total Groups"
 
@@ -84,26 +87,26 @@ namespace :euros do
     renato = User.find_by(email: 'renatonato_jr@hotmail.com') || User.create(email: 'renatonato_jr@hotmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
     caio = User.find_by(email: 'caio.santos@msn.com') || User.create(email: 'caio.santos@msn.com', password: ENV['ADMIN_PASSWORD'], admin: true)
 
-    puts 'Creating a test leaderboards'
-    leaderboard = Leaderboard.find_or_create_by(
+    puts 'Creating test leaderboards'
+    leaderboard = Leaderboard.find_or_create_by!(
       name: 'Admin Leaderboard 1',
       competition: euros,
       user: trouni
     )
-    Membership.find_or_create_by(leaderboard: leaderboard, user: doug)
-    Membership.find_or_create_by(leaderboard: leaderboard, user: james)
-    Membership.find_or_create_by(leaderboard: leaderboard, user: renato)
-    Membership.find_or_create_by(leaderboard: leaderboard, user: caio)
+    Membership.find_or_create_by!(leaderboard: leaderboard, user: doug)
+    Membership.find_or_create_by!(leaderboard: leaderboard, user: james)
+    Membership.find_or_create_by!(leaderboard: leaderboard, user: renato)
+    Membership.find_or_create_by!(leaderboard: leaderboard, user: caio)
 
-    leaderboard = Leaderboard.find_or_create_by(
+    leaderboard = Leaderboard.find_or_create_by!(
       name: 'Admin Leaderboard 2',
       competition: euros,
       user: doug
     )
-    Membership.find_or_create_by(leaderboard: leaderboard, user: trouni)
-    Membership.find_or_create_by(leaderboard: leaderboard, user: james)
-    Membership.find_or_create_by(leaderboard: leaderboard, user: renato)
-    Membership.find_or_create_by(leaderboard: leaderboard, user: caio)
+    Membership.find_or_create_by!(leaderboard: leaderboard, user: trouni)
+    Membership.find_or_create_by!(leaderboard: leaderboard, user: james)
+    Membership.find_or_create_by!(leaderboard: leaderboard, user: renato)
+    Membership.find_or_create_by!(leaderboard: leaderboard, user: caio)
   end
 
 end
