@@ -35,6 +35,7 @@ class Match < ApplicationRecord
     self.team_away_et_score = match_info['score']['extraTime']['away'] if match_info['score']['extraTime']
     self.team_home_ps_score = match_info['score']['penalties']['home'] if match_info['score']['penalties']
     self.team_away_ps_score = match_info['score']['penalties']['away'] if match_info['score']['penalties']
+    # TODO: I'm not sure how we're displaying the scores in the view
     save
 
     scores = ["FT Score > #{build_regular_time_score}"]
