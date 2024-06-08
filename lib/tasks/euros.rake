@@ -83,7 +83,7 @@ namespace :euros do
       group = Group.find_or_create_by!(name: group_name, round: first_round, api_id: groups[group_name][:api_id], api_code: groups[group_name][:api_code])
       groups[group_name][:teams].each do |team_hash|
         puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
-        team = Team.find_by!(abbrev: team_hash[:abbrev]) || Team.create!(team_hash)
+        team = Team.find_by(abbrev: team_hash[:abbrev]) || Team.create!(team_hash)
         Affiliation.find_or_create_by!(team: team, group: group)
       end
     end
