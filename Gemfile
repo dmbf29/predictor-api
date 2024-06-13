@@ -35,6 +35,7 @@ gem 'omniauth'
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
+gem 'postmark-rails'
 gem 'progress_bar'
 gem 'pundit'
 gem 'rexml'

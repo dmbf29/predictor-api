@@ -42,5 +42,9 @@ module PredictorApi
     config.session_store :cookie_store, key: '_interslice_session'
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use config.session_store, config.session_options
+
+    # Mailer
+    config.action_mailer.delivery_method = :postmark
+    config.action_mailer.postmark_settings = { :api_token => ENV['POSTMARK_SERVER_API_TOKEN'] }
   end
 end
