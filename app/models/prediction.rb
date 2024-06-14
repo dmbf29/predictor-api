@@ -6,6 +6,7 @@ class Prediction < ApplicationRecord
   validates :choice, presence: true
   enum choice: { home: 'home', away: 'away', draw: 'draw' }
 
+  scope :editable, -> { joins(:match).where(matches: { status: :upcoming }) }
   scope :locked, -> { joins(:match).where.not(matches: { status: :upcoming }) }
 
   after_commit :refresh_materialized_views
