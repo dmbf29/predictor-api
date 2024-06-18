@@ -14,7 +14,7 @@ class CompetitionCreateJob < ApplicationJob
     competition_parsed = parsed_response['competition']
     season_parsed = parsed_response['season']
     puts 'Creating the competition...'
-    competition = Competition.find_or_create_by!(name: competition_parsed['name'], start_date: Date.parse(season_parsed["startDate"]), end_date: Date.parse(season_parsed["endDate"]), api_id: competition_parsed['id'], api_code: competition_parsed['code'])
+    competition = Competition.find_or_create_by!(name: "#{competition_parsed['name']} #{Date.today.year}", start_date: Date.parse(season_parsed["startDate"]), end_date: Date.parse(season_parsed["endDate"]), api_id: competition_parsed['id'], api_code: competition_parsed['code'])
     puts '.. created the competition'
 
     puts 'Creating or finding the rounds...'
