@@ -39,8 +39,8 @@ class CompetitionCreateJob < ApplicationJob
         puts "Finding the match between : #{match_info['homeTeam']['name']} v #{match_info['awayTeam']['name']} (#{kickoff_time})"
         next unless match_info['homeTeam']['tla'] && match_info['awayTeam']['tla'] # knock-out rounds with no teams yet
 
-        team_home = Team.find_by!(abbrev: match_info['homeTeam']['tla']) || Team.create!(name: match_info['homeTeam']['shortName'], abbrev: match_info['homeTeam']['tla'])
-        team_away = Team.find_by!(abbrev: match_info['awayTeam']['tla']) || Team.create!(name: match_info['awayTeam']['shortName'], abbrev: match_info['awayTeam']['tla'])
+        team_home = Team.find_by(abbrev: match_info['homeTeam']['tla']) || Team.create!(name: match_info['homeTeam']['shortName'], abbrev: match_info['homeTeam']['tla'])
+        team_away = Team.find_by(abbrev: match_info['awayTeam']['tla']) || Team.create!(name: match_info['awayTeam']['shortName'], abbrev: match_info['awayTeam']['tla'])
 
         puts 'Getting/creating round and group...'
         round = Round.find_by!(competition: competition, api_name: match_info['stage'])
