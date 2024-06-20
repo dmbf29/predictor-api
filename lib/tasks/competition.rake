@@ -212,4 +212,23 @@ namespace :competition do
     end
   end
 
+  desc "Adds the photos to old competiton"
+  task add_photos: :environment do
+    euro_2020 = Competition.find_by(name: 'Euro 2020')
+    file = URI.open('https://upload.wikimedia.org/wikipedia/en/9/96/UEFA_Euro_2020_Logo.svg')
+    euro_2020.photo.attach(io: file, filename: 'logo.png', content_type: 'image/png') unless euro_2020.photo.attached?
+
+    wc_2022 = Competition.find_by(name: 'World Cup 2022')
+    file = URI.open('https://crests.football-data.org/qatar.png')
+    wc_2022.photo.attach(io: file, filename: 'logo.png', content_type: 'image/png') unless wc_2022.photo.attached?
+
+    euro_2024 = Competition.find_by(name: 'Euros 2024')
+    file = URI.open('https://www.football-data.org/assets/logo-euro_2020.svg')
+    euro_2024.photo.attach(io: file, filename: 'logo.png', content_type: 'image/png') unless euro_2024.photo.attached?
+
+    copa_2024 = Competition.find_by(name: 'Copa America 2024')
+    file = URI.open('https://static.wikia.nocookie.net/internationalbroadcasts/images/8/80/2024_Copa_Am%C3%A9rica_logo.png/revision/latest/thumbnail/width/360/height/360?cb=20240402104618')
+    copa_2024.photo.attach(io: file, filename: 'logo.png', content_type: 'image/png') unless copa_2024.photo.attached?
+  end
+
 end
