@@ -28,11 +28,11 @@ SIDEKIQ_PASSWORD=*******
 FOOTBALL_DATA_TOKEN=*******
 ```
 
-## Football-Data API
-[Import the Postman endpoints](https://www.football-data.org/documentation/quickstart)
-
 ## Download the DB
 Pull from Heroku
 ```
 rails heroku:pg_pull
 ```
+
+## Football-Data API
+[Import the Postman endpoints](https://www.football-data.org/documentation/quickstart)
