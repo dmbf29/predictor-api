@@ -13,7 +13,7 @@ puts 'Creating test users...'
 20.times do
   User.create(
     # fake emails for testing purposes
-    email: Faker::Internet.safe_email,
+    email: Faker::Internet.email,
     password: '123123'
   )
 end
