@@ -26,7 +26,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'rack-cors', require: 'rack/cors'
 
 # Added
-gem 'cloudinary'
+gem 'cloudinary', '~> 1.16.0'
 gem 'devise'
 gem 'devise_token_auth', github: 'lynndylanhurley/devise_token_auth'
 gem 'faker'

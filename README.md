@@ -1,41 +1,12 @@
 # predictor-app
 ## Project setup
 
-### Create and populate .env file as follows (do the necessary changes):
-```
-CLOUDINARY_URL=CLOUDINARY_URL=cloudinary://<your_api_key>:<your_api_secret>@yanninthesky
-FOOTBALL_DATA_TOKEN=<your_football_token>
-ADMIN_PASSWORD=<your admin password>
-```
-
-### Install and run sidekiq
-```
-# On macOS
-brew update
-brew install redis
-brew services start redis
-sidekiq
-```
-
-```
-# On Ubuntu
-curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-
-echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-
-sudo apt-get update
-sudo apt-get install redis
-sudo apt-get install redis-server
-sidekiq
-```
-
 ### Create DB / Migrate / Seed
 ```
 rails db:create
 rails db:migrate
 rails db:seed
 ```
-
 ### Installs dependencies
 ```
 bundle install
