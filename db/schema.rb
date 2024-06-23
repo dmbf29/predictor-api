@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_06_06_055739) do
+ActiveRecord::Schema.define(version: 2024_06_23_064544) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -179,8 +180,10 @@ ActiveRecord::Schema.define(version: 2024_06_06_055739) do
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
     t.string "photo_key"
+    t.jsonb "notifications", default: {}
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["notifications"], name: "index_users_on_notifications", using: :gin
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end

@@ -22,6 +22,26 @@ class User < ApplicationRecord
     super || email.split('@').first
   end
 
+  # user.notification_enabled?(:email, :prediction_missing)
+  # (query) User.where("notifications->'email'->>'prediction_missing' = ?", 'true')
+  def notification_enabled?(method, event)
+    notifications.dig(method.to_s, event.to_s) || false
+  end
+
+  # user.enable_notification!(:email, :prediction_missing)
+  def enable_notification!(method, event)
+    self.notifications[method.to_s] ||= {}
+    self.notifications[method.to_s][event.to_s] = true
+    save
+  end
+
+  # user.disable_notification!(:email, :prediction_missing)
+  def disable_notification!(method, event)
+    self.notifications[method.to_s] ||= {}
+    self.notifications[method.to_s][event.to_s] = false
+    save
+  end
+
   private
 
   def auto_join_leaderboards
