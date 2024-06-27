@@ -14,6 +14,10 @@ class User < ApplicationRecord
   # Scenic views
   has_many :scores, class_name: 'UserScore'
 
+  scope :with_email_prediction_missing, -> {
+    where("notifications->'email'->>'prediction_missing' = ?", 'true')
+  }
+
   validates :name, presence: true, on: :update, if: :name_changed?
 
   after_create :auto_join_leaderboards
@@ -40,6 +44,15 @@ class User < ApplicationRecord
     self.notifications[method.to_s] ||= {}
     self.notifications[method.to_s][event.to_s] = false
     save
+  end
+
+  def self.need_prediction_notifications(next_match)
+    return [] if next_match.blank?
+
+    # total number of people who have made predicitons (and have email on)
+    users = next_match.competition.users_predicted.with_email_prediction_missing
+    # minus the ones who have made predictions for this match
+    users - users.joins(:predictions).where(predictions: { match_id: next_match.id })
   end
 
   private
