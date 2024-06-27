@@ -8,7 +8,7 @@ class Notifications::PredictionMissingJob < ApplicationJob
       users_to_email = User.need_prediction_notifications(match)
       users_to_email.each do |user|
         email = Email.find_by(user: user, topic: match, notification: 'prediction_missing')
-        UserMailer.with(user: user, match: match).prediction_missing.deliver_later unless email
+        UserMailer.with(user: user, match: match, notification: 'prediction_missing').prediction_missing.deliver_later unless email
       end
     end
   end
