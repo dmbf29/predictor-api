@@ -10,6 +10,7 @@ class User < ApplicationRecord
   # has_many :competitions, through: :leaderboards
   has_many :predictions, dependent: :destroy
   has_many :matches, through: :predictions
+  has_many :emails, dependent: :destroy
 
   # Scenic views
   has_many :scores, class_name: 'UserScore'

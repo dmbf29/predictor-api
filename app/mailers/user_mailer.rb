@@ -9,7 +9,7 @@ class UserMailer < ApplicationMailer
     @user = params[:user] # Instance variable => available in view
     @match = params[:match]
     @notification = params[:notification]
-    mail(to: @user.email, subject: "Octacle - Make your predictions before it's too late!")
-    Email.create(user: @user, match: @match, notification: @notification)
+    mail(to: @user.email, subject: "Octacle - You're missing a prediction for #{@match.team_home.abbrev} vs. #{@match.team_away.abbrev}")
+    Email.create(user: @user, topic: @match, notification: @notification)
   end
 end

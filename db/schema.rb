@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_06_23_064544) do
+ActiveRecord::Schema.define(version: 2024_06_27_134655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -63,6 +63,17 @@ ActiveRecord::Schema.define(version: 2024_06_23_064544) do
     t.integer "api_id"
     t.string "api_code"
     t.index ["current_round_id"], name: "index_competitions_on_current_round_id"
+  end
+
+  create_table "emails", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "notification"
+    t.string "topic_type"
+    t.bigint "topic_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["topic_type", "topic_id"], name: "index_emails_on_topic"
+    t.index ["user_id"], name: "index_emails_on_user_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -193,6 +204,7 @@ ActiveRecord::Schema.define(version: 2024_06_23_064544) do
   add_foreign_key "affiliations", "groups"
   add_foreign_key "affiliations", "teams"
   add_foreign_key "competitions", "rounds", column: "current_round_id"
+  add_foreign_key "emails", "users"
   add_foreign_key "groups", "rounds"
   add_foreign_key "leaderboards", "competitions"
   add_foreign_key "leaderboards", "users"

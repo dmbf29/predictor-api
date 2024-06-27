@@ -1,5 +1,19 @@
-<h1>User#prediction_missing</h1>
+<style>
+  .btn {
+    padding: 12px 24px;
+    background-color: #222249;
+    color: white;
+    text-decoration: none;
+  }
 
-<p>
-  <%= @greeting %>, find me in app/views/user_mailer/prediction_missing.html.erb
-</p>
+  .pb-3 {
+    padding-bottom: 8px;
+  }
+</style>
+<div class="container">
+  <h1>Make your prediction before it's too late!</h1>
+  <p class='pb-3'><%= @match.team_home.abbrev %> vs. <%= @match.team_away.abbrev %> kicks off at <%= @match.kickoff_time.strftime('%a, %e %b %H:%M') %> UTC</p>
+  <p>
+    <%= link_to 'Visit Octacle to Choose', 'https://www.octacle.app/competitions/predictions', class: 'btn', target: '_blank' %>
+  </p>
+</div>
