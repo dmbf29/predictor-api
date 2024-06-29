@@ -1,19 +1,15 @@
-<style>
-  .btn {
-    padding: 12px 24px;
-    background-color: #222249;
-    color: white;
-    text-decoration: none;
-  }
-
-  .pb-3 {
-    padding-bottom: 8px;
-  }
-</style>
 <div class="container">
-  <h1>Make your prediction before it's too late!</h1>
-  <p class='pb-3'><%= @match.team_home.abbrev %> vs. <%= @match.team_away.abbrev %> kicks off at <%= @match.kickoff_time.strftime('%a, %e %b %H:%M') %> UTC</p>
-  <p>
-    <%= link_to 'Visit Octacle to Choose', 'https://www.octacle.app/competitions/predictions', class: 'btn', target: '_blank' %>
-  </p>
+  <%= render 'shared/banner' %>
+  <div class="container">
+    <div class="d-flex flex-column align-items-center">
+      <div class='d-flex align-items-center my-3'>
+        <%= image_tag cl_image_path(@match.team_home.flag.key), alt: "text", width: 100, class: 'me-2 rounded' %><strong><%= @match.team_home.name %></strong> <span class='px-2 fw-light'>vs.</span> <strong><%= @match.team_away.name %></strong> <%= image_tag cl_image_path(@match.team_away.flag.key), alt: "text", width: 100, class: 'ms-2 rounded' %>
+      </div>
+      <p class='m-0'>The match kicks off at <%= @match.kickoff_time.strftime('%a, %e %b %H:%M') %> UTC.</p>
+      <p class='pb-2'>Don't forget to get your prediction locked in!</p>
+      <p>
+        <%= link_to 'Visit Octacle', 'https://www.octacle.app/competitions/predictions', class: 'btn btn-purple', target: '_blank' %>
+      </p>
+    </div>
+  </div>
 </div>
