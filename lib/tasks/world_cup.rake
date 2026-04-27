@@ -178,12 +178,39 @@ namespace :world_cup do
     puts "...#{Group.joins(:round).where(rounds: { competition_id: world_cup.id }).count} Total Groups"
 
     puts 'Getting Admin users...'
-    doug = User.find_by(email: 'douglasmberkley@gmail.com') || User.create(email: 'douglasmberkley@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
-    trouni = User.find_by(email: 'trouni@gmail.com') || User.create(email: 'trouni@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
-    james = User.find_by(email: 'devereuxjj@gmail.com') || User.create(email: 'devereuxjj@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
-    renato = User.find_by(email: 'renatonato_jr@hotmail.com') || User.create(email: 'renatonato_jr@hotmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
-    caio = User.find_by(email: 'caio.santos@msn.com') || User.create(email: 'caio.santos@msn.com', password: ENV['ADMIN_PASSWORD'], admin: true)
+    admin_emails = [
+      'douglasmberkley@gmail.com',
+      'trouni@gmail.com',
+      'devereuxjj@gmail.com',
+      'renatonato_jr@hotmail.com',
+      'caio.santos@msn.com'
+    ]
+    admin_password = ENV['ADMIN_PASSWORD']
 
+    if admin_password.blank? && admin_emails.any? { |email| User.find_by(email: email).nil? }
+      raise 'ADMIN_PASSWORD must be set to create missing admin users.'
+    end
+
+    doug = User.find_or_create_by!(email: 'douglasmberkley@gmail.com') do |user|
+      user.password = admin_password
+      user.admin = true
+    end
+    trouni = User.find_or_create_by!(email: 'trouni@gmail.com') do |user|
+      user.password = admin_password
+      user.admin = true
+    end
+    james = User.find_or_create_by!(email: 'devereuxjj@gmail.com') do |user|
+      user.password = admin_password
+      user.admin = true
+    end
+    renato = User.find_or_create_by!(email: 'renatonato_jr@hotmail.com') do |user|
+      user.password = admin_password
+      user.admin = true
+    end
+    caio = User.find_or_create_by!(email: 'caio.santos@msn.com') do |user|
+      user.password = admin_password
+      user.admin = true
+    end
     puts 'Creating test users...'
     20.times do
       User.create(
