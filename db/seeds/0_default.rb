@@ -208,7 +208,10 @@ Leaderboard.find_each do |ldbrd|
   end
 end
 
-ScrapeMatchesService.new.call
+# I'm not sure why we were scraping instead of calling the API...
+# ScrapeMatchesService.new.call
+# Creating matches with API:
+MatchUpdateJob.perform_later(world_cup.id)
 
 # puts 'Assigning random scores to matches before June 22nd'
 # Match.where('kickoff_time < ?', Date.new(2021, 6, 22)).each do |match|

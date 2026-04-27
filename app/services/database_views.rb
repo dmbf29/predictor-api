@@ -7,7 +7,7 @@ class DatabaseViews
 
   def self.deactivate_callback
     MODELS.each do |model|
-      model.skip_callback(:commit, :after, :refresh_materialized_views)
+      model.skip_callback(:commit, :after, :refresh_materialized_views, raise: false)
     end
   end
 
