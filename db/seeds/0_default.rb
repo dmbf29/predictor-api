@@ -164,8 +164,9 @@ groups.each_key do |group_name|
   group = Group.find_or_create_by!(name: group_name, round: first_round)
   groups[group_name].each do |team_hash|
     puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
-    team = Team.find_or_create_by!(name: team_hash[:name], abbrev: team_hash[:abbrev])
-    team.update!(api_id: team_hash[:api_id])
+    team = Team.find_by(abbrev: team_hash[:abbrev]) || Team.find_or_create_by!(abbrev: team_hash[:abbrev], name: team_hash[:name])
+    # Some country names change over time
+    team.update!(api_id: team_hash[:api_id], name: team_hash[:name])
     Affiliation.find_or_create_by!(team: team, group: group)
   end
 end
