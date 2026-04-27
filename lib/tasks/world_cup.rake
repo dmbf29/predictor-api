@@ -137,14 +137,29 @@ namespace :world_cup do
     puts '.. created the World Cup'
 
     puts 'Creating or finding rounds...'
-    first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competition: world_cup, api_name: 'GROUP_STAGE')
+    rounds = [
+      { name: 'Group Stage', number: 1, api_name: 'GROUP_STAGE' },
+      { name: 'Round of 32', number: 2, api_name: 'LAST_32' },
+      { name: 'Round of 16', number: 3, api_name: 'LAST_16' },
+      { name: 'Quarter-finals', number: 4, api_name: 'QUARTER_FINALS' },
+      { name: 'Semi-finals', number: 5, api_name: 'SEMI_FINALS' },
+      { name: 'Third Place', number: 6, api_name: 'THIRD_PLACE' },
+      { name: 'Final', number: 7, api_name: 'FINAL' }
+    ]
+
+    first_round = nil
+    rounds.each do |round_attrs|
+      round = Round.find_or_create_by!(
+        competition: world_cup,
+        name: round_attrs[:name]
+      )
+      round.update!(
+        number: round_attrs[:number],
+        api_name: round_attrs[:api_name]
+      )
+      first_round ||= round if round_attrs[:name] == 'Group Stage'
+    end
     world_cup.update!(current_round: first_round)
-    Round.find_or_create_by!(name: 'Round of 32', number: 2, competition: world_cup, api_name: 'LAST_32')
-    Round.find_or_create_by!(name: 'Round of 16', number: 3, competition: world_cup, api_name: 'LAST_16')
-    Round.find_or_create_by!(name: 'Quarter-finals', number: 4, competition: world_cup, api_name: 'QUARTER_FINALS')
-    Round.find_or_create_by!(name: 'Semi-finals', number: 5, competition: world_cup, api_name: 'SEMI_FINALS')
-    Round.find_or_create_by!(name: 'Third Place', number: 6, competition: world_cup, api_name: 'THIRD_PLACE')
-    Round.find_or_create_by!(name: 'Final', number: 7, competition: world_cup, api_name: 'FINAL')
 
     puts 'Creating or finding groups...'
     groups.each_key do |group_name|
