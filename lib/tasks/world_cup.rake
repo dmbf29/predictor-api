@@ -211,12 +211,21 @@ namespace :world_cup do
       user.password = admin_password
       user.admin = true
     end
-    puts 'Creating test users...'
-    20.times do
-      User.create(
-        email: Faker::Internet.safe_email,
-        password: '123123'
-      )
+    if Rails.env.development? || ENV['ALLOW_TEST_USER_SEED'] == 'true'
+      puts 'Creating test users...'
+      20.times do
+        email = loop do
+          candidate = Faker::Internet.unique.safe_email
+          break candidate unless User.exists?(email: candidate)
+        end
+
+        User.create!(
+          email: email,
+          password: '123123'
+        )
+      end
+    else
+      puts 'Skipping test users outside development. Set ALLOW_TEST_USER_SEED=true to enable.'
     end
     puts "... #{User.count} Total Users"
 
