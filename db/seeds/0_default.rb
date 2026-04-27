@@ -148,10 +148,12 @@ crest_urls = {
 }
 
 puts 'Creating the World Cup...'
-world_cup = Competition.find_or_create_by!(name: 'FIFA World Cup', start_date: Date.new(2026, 6, 11), end_date: Date.new(2026, 7, 19)) do |c|
-  c.api_id = 2000
-  c.api_code = 'WC'
-end
+world_cup = Competition.find_or_initialize_by(
+  name: 'FIFA World Cup',
+  start_date: Date.new(2026, 6, 11),
+  end_date: Date.new(2026, 7, 19)
+)
+world_cup.update!(api_id: 2000, api_code: 'WC')
 puts '.. created the World Cup'
 
 puts 'Creating or finding first round...'
