@@ -1,8 +1,6 @@
 namespace :world_cup do
   desc "Create the FIFA World Cup 2026 competition"
   task create: :environment do
-    DatabaseViews.deactivate_callback
-
     groups = {
       'Group A' => {
         api_id: nil,
@@ -199,7 +197,5 @@ namespace :world_cup do
     MatchUpdateJob.perform_now(world_cup.id)
 
     AttachFlagsJob.perform_now(world_cup.id)
-
-    DatabaseViews.activate_callback(then_refresh: true)
   end
 end
