@@ -173,9 +173,9 @@ namespace :world_cup do
       end
     end
 
-    puts "...#{world_cup.rounds.count} Total Rounds"
-    puts "...#{world_cup.teams.count} Total Teams"
-    puts "...#{world_cup.groups.count} Total Groups"
+    puts "...#{Round.where(competition: world_cup).count} Total Rounds"
+    puts "...#{Team.joins(affiliations: { group: :round }).where(rounds: { competition_id: world_cup.id }).distinct.count} Total Teams"
+    puts "...#{Group.joins(:round).where(rounds: { competition_id: world_cup.id }).count} Total Groups"
 
     puts 'Getting Admin users...'
     doug = User.find_by(email: 'douglasmberkley@gmail.com') || User.create(email: 'douglasmberkley@gmail.com', password: ENV['ADMIN_PASSWORD'], admin: true)
