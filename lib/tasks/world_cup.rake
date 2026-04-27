@@ -125,7 +125,15 @@ namespace :world_cup do
     }
 
     puts 'Creating the World Cup...'
-    world_cup = Competition.find_or_create_by!(name: 'FIFA World Cup 2026', start_date: Date.new(2026, 6, 11), end_date: Date.new(2026, 7, 19), api_id: 2000, api_code: 'WC')
+    world_cup = Competition.find_or_create_by!(
+      name: 'FIFA World Cup 2026',
+      start_date: Date.new(2026, 6, 11)
+    )
+    world_cup.update!(
+      end_date: Date.new(2026, 7, 19),
+      api_id: 2000,
+      api_code: 'WC'
+    )
     puts '.. created the World Cup'
 
     puts 'Creating or finding rounds...'
