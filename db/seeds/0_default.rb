@@ -216,6 +216,9 @@ end
 # I'm not sure why we were scraping instead of calling the API...
 # ScrapeMatchesService.new.call
 # Creating matches with API:
+if ENV['FOOTBALL_DATA_TOKEN'].blank?
+  raise 'FOOTBALL_DATA_TOKEN must be set to seed matches. Seeds now run MatchUpdateJob synchronously, so configure the token before running rails db:seed.'
+end
 MatchUpdateJob.perform_now(world_cup.id)
 
 # puts 'Assigning random scores to matches before June 22nd'
