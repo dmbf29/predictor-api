@@ -149,7 +149,7 @@ crest_urls = {
 
 puts 'Creating the World Cup...'
 world_cup = Competition.find_or_initialize_by(
-  name: 'FIFA World Cup',
+  name: 'FIFA World Cup 2026',
   start_date: Date.new(2026, 6, 11),
   end_date: Date.new(2026, 7, 19)
 )
