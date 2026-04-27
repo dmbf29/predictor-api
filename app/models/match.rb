@@ -28,7 +28,7 @@ class Match < ApplicationRecord
 
   def update_with_api(match_info)
     finished! if match_info['status'] == 'FINISHED'
-    started! if match_info['status'] == 'IN PLAY' || match_info['status'] == 'LIVE'
+    started! if match_info['status'] == 'IN PLAY' || match_info['status'] == 'IN_PLAY' || match_info['status'] == 'LIVE'
     self.team_home_score = match_info['score']['fullTime']['home']
     self.team_away_score = match_info['score']['fullTime']['away']
     self.team_home_et_score = match_info['score']['extraTime']['home'] if match_info['score']['extraTime']

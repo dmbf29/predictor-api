@@ -22,73 +22,73 @@ end
 puts "... #{User.count} Total Users"
 
 groups = {
-  'Group A' => [
+  'GROUP_A' => [
     { name: 'Mexico', abbrev: 'MEX', api_id: 769 },
     { name: 'South Africa', abbrev: 'RSA', api_id: 774 },
     { name: 'South Korea', abbrev: 'KOR', api_id: 772 },
     { name: 'Czechia', abbrev: 'CZE', api_id: 798 }
   ],
-  'Group B' => [
+  'GROUP_B' => [
     { name: 'Canada', abbrev: 'CAN', api_id: 828 },
     { name: 'Bosnia-Herzegovina', abbrev: 'BIH', api_id: 1060 },
     { name: 'Qatar', abbrev: 'QAT', api_id: 8030 },
     { name: 'Switzerland', abbrev: 'SUI', api_id: 788 }
   ],
-  'Group C' => [
+  'GROUP_C' => [
     { name: 'Brazil', abbrev: 'BRA', api_id: 764 },
     { name: 'Morocco', abbrev: 'MAR', api_id: 815 },
     { name: 'Haiti', abbrev: 'HAI', api_id: 836 },
     { name: 'Scotland', abbrev: 'SCO', api_id: 8873 }
   ],
-  'Group D' => [
+  'GROUP_D' => [
     { name: 'United States', abbrev: 'USA', api_id: 771 },
     { name: 'Paraguay', abbrev: 'PAR', api_id: 761 },
     { name: 'Australia', abbrev: 'AUS', api_id: 779 },
     { name: 'Turkey', abbrev: 'TUR', api_id: 803 }
   ],
-  'Group E' => [
+  'GROUP_E' => [
     { name: 'Germany', abbrev: 'GER', api_id: 759 },
     { name: 'Curaçao', abbrev: 'CUR', api_id: 9460 },
     { name: 'Ivory Coast', abbrev: 'CIV', api_id: 1935 },
     { name: 'Ecuador', abbrev: 'ECU', api_id: 791 }
   ],
-  'Group F' => [
+  'GROUP_F' => [
     { name: 'Netherlands', abbrev: 'NED', api_id: 8601 },
     { name: 'Japan', abbrev: 'JPN', api_id: 766 },
     { name: 'Sweden', abbrev: 'SWE', api_id: 792 },
     { name: 'Tunisia', abbrev: 'TUN', api_id: 802 }
   ],
-  'Group G' => [
+  'GROUP_G' => [
     { name: 'Belgium', abbrev: 'BEL', api_id: 805 },
     { name: 'Egypt', abbrev: 'EGY', api_id: 825 },
     { name: 'Iran', abbrev: 'IRN', api_id: 840 },
     { name: 'New Zealand', abbrev: 'NZL', api_id: 783 }
   ],
-  'Group H' => [
+  'GROUP_H' => [
     { name: 'Spain', abbrev: 'ESP', api_id: 760 },
     { name: 'Cape Verde Islands', abbrev: 'CPV', api_id: 1930 },
     { name: 'Saudi Arabia', abbrev: 'KSA', api_id: 801 },
     { name: 'Uruguay', abbrev: 'URU', api_id: 758 }
   ],
-  'Group I' => [
+  'GROUP_I' => [
     { name: 'Iraq', abbrev: 'IRQ', api_id: 8062 },
     { name: 'France', abbrev: 'FRA', api_id: 773 },
     { name: 'Senegal', abbrev: 'SEN', api_id: 804 },
     { name: 'Norway', abbrev: 'NOR', api_id: 8872 }
   ],
-  'Group J' => [
+  'GROUP_J' => [
     { name: 'Argentina', abbrev: 'ARG', api_id: 762 },
     { name: 'Algeria', abbrev: 'ALG', api_id: 778 },
     { name: 'Austria', abbrev: 'AUT', api_id: 816 },
     { name: 'Jordan', abbrev: 'JOR', api_id: 8049 }
   ],
-  'Group K' => [
+  'GROUP_K' => [
     { name: 'Congo DR', abbrev: 'COD', api_id: 1934 },
     { name: 'Portugal', abbrev: 'POR', api_id: 765 },
     { name: 'Uzbekistan', abbrev: 'UZB', api_id: 8070 },
     { name: 'Colombia', abbrev: 'COL', api_id: 818 }
   ],
-  'Group L' => [
+  'GROUP_L' => [
     { name: 'England', abbrev: 'ENG', api_id: 770 },
     { name: 'Croatia', abbrev: 'CRO', api_id: 799 },
     { name: 'Ghana', abbrev: 'GHA', api_id: 763 },
@@ -159,10 +159,12 @@ first_round = Round.find_or_create_by!(name: 'Group Stage', number: 1, competiti
 puts "...#{Round.count} Total Rounds"
 
 puts 'Creating or finding groups...'
-groups.each_key do |group_name|
-  puts "...#{group_name}..."
-  group = Group.find_or_create_by!(name: group_name, round: first_round)
-  groups[group_name].each do |team_hash|
+groups.each_key do |api_code|
+  puts "...#{api_code}..."
+  group = Group.find_or_create_by!(api_code: api_code, round: first_round) do |g|
+    g.name = api_code.split('_').map(&:capitalize).join(' ')
+  end
+  groups[api_code].each do |team_hash|
     puts "Name: #{team_hash[:name]}, Abbrev: #{team_hash[:abbrev]}"
     team = Team.find_by(abbrev: team_hash[:abbrev]) || Team.find_or_create_by!(abbrev: team_hash[:abbrev], name: team_hash[:name])
     # Some country names change over time
@@ -212,7 +214,7 @@ end
 # I'm not sure why we were scraping instead of calling the API...
 # ScrapeMatchesService.new.call
 # Creating matches with API:
-MatchUpdateJob.perform_later(world_cup.id)
+MatchUpdateJob.perform_now(world_cup.id)
 
 # puts 'Assigning random scores to matches before June 22nd'
 # Match.where('kickoff_time < ?', Date.new(2021, 6, 22)).each do |match|
