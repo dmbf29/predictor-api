@@ -33,8 +33,7 @@ class MatchUpdateJob < ApplicationJob
         match.round = Round.find_by(competition: @competition, api_name: match_info['stage'])
         match.group = Group.find_by(round: match.round, api_code: match_info["group"]) if match_info["group"]
         match.api_id = match_info['id']
-        # TODO: Don't think we're getting the location from the API
-        # match.location = match_info['location']
+        match.location = match_info['venue']
         match.kickoff_time = kickoff_time
         match.save
         p match.errors.full_messages if match.errors.any?
