@@ -20,6 +20,7 @@ class Competition < ApplicationRecord
   before_destroy :destroy_rounds
 
   def destroy_rounds
+    update_column(:current_round_id, nil)
     Round.where(competition: self).destroy_all
   end
 
