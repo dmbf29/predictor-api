@@ -14,6 +14,8 @@ class AttachFlagsJob < ApplicationJob
     teams = JSON.parse(response)['teams']
     teams.each do |team_hash|
       team = Team.find_by(abbrev: team_hash['tla'])
+      next unless team
+
       puts "#{team.name}: #{team_hash['crest']}"
       team.flag.attach(io: URI.open(team_hash['crest']), filename: 'flag.png', content_type: 'image/png') unless team.flag.attached?
       team.badge.attach(io: URI.open(team_hash['crest']), filename: 'badge.png', content_type: 'image/png') unless team.badge.attached?

@@ -151,10 +151,10 @@ namespace :world_cup do
     rounds.each do |round_attrs|
       round = Round.find_or_create_by!(
         competition: world_cup,
-        name: round_attrs[:name]
+        name: round_attrs[:name],
+        number: round_attrs[:number]
       )
       round.update!(
-        number: round_attrs[:number],
         api_name: round_attrs[:api_name]
       )
       first_round ||= round if round_attrs[:name] == 'Group Stage'
