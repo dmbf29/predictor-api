@@ -138,7 +138,7 @@ namespace :world_cup do
       api_code: 'WC'
     )
     file = URI.parse("https://crests.football-data.org/wm26.png").open
-    world_cup.photo.attach(io: file, filename: 'logo.png', content_type: 'image/png')
+    world_cup.photo.attach(io: file, filename: 'logo.png', content_type: 'image/png') unless world_cup.photo.attached?
     puts '.. created the World Cup'
 
     puts 'Creating or finding rounds...'
@@ -235,6 +235,20 @@ namespace :world_cup do
     puts "... #{User.count} Total Users"
 
     puts 'Creating test leaderboards'
+    leaderboard_hash = {
+      name: 'Global Top Players',
+      description: 'The top players on Octacle',
+      rankings_top_n: 10,
+      leave_disabled: true,
+      auto_join: true,
+    }
+    leaderboard = world_cup.leaderboards.find_or_initialize_by(leaderboard_hash.slice(:name))
+    leaderboard.assign_attributes(leaderboard_hash)
+    leaderboard.user ||= doug
+    leaderboard.save!
+
+
+
     leaderboard = Leaderboard.find_or_create_by!(
       name: 'Admin Leaderboard 1',
       competition: world_cup,
