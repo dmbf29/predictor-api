@@ -3,6 +3,7 @@ require 'open-uri'
 namespace :world_cup do
   desc "Create the FIFA World Cup 2026 competition"
   task create: :environment do
+    # So apparently there is a job to create a competition... but it doesn't work and this one does ATM.
     groups = {
       'Group A' => {
         api_id: nil,
