@@ -1,3 +1,5 @@
+require 'open-uri'
+
 namespace :world_cup do
   desc "Create the FIFA World Cup 2026 competition"
   task create: :environment do
@@ -134,6 +136,8 @@ namespace :world_cup do
       api_id: 2000,
       api_code: 'WC'
     )
+    file = URI.parse("https://crests.football-data.org/wm26.png").open
+    world_cup.photo.attach(io: file, filename: 'logo.png', content_type: 'image/png')
     puts '.. created the World Cup'
 
     puts 'Creating or finding rounds...'
