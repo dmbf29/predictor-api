@@ -1,0 +1,23 @@
+<p style="margin:0 0 10px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#8b87c0;">Account locked</p>
+<h1 style="margin:0 0 12px; font-size:22px; font-weight:800; color:#1a1833; letter-spacing:-0.02em; line-height:1.2;">Unlock your account</h1>
+
+<p style="margin:0 0 16px; font-size:15px; line-height:1.6; color:#4a4869;">
+  Hey <strong style="color:#1a1833; font-weight:600;"><%= @resource.email %></strong> — your account was locked after too many unsuccessful sign-in attempts. Click the button below to unlock it.
+</p>
+
+<table cellpadding="0" cellspacing="0" style="margin:20px 0;">
+  <tr>
+    <td style="border-radius:14px; background-color:#fa5151;">
+      <a href="<%= unlock_url(@resource, unlock_token: @token) %>"
+         style="display:inline-block; padding:14px 28px; font-size:15px; font-weight:700; color:#ffffff; text-decoration:none; border-radius:14px; background-color:#fa5151;">
+        Unlock my account →
+      </a>
+    </td>
+  </tr>
+</table>
+
+<hr style="border:none; border-top:1px solid #eeecf8; margin:24px 0;" />
+
+<p style="margin:0; font-size:13px; line-height:1.6; color:#9896b8;">
+  If you didn't trigger this, someone may be trying to access your account. Consider changing your password after unlocking.
+</p>
