@@ -6,10 +6,11 @@ class UserMailer < ApplicationMailer
   #   en.user_mailer.prediction_missing.subject
   #
   def prediction_missing
-    @user = params[:user] # Instance variable => available in view
-    @match = params[:match]
+    @user = params[:user]
+    @round = params[:round]
+    @missing_count = params[:missing_count]
     @notification = params[:notification]
-    mail(to: @user.email, subject: "Octacle - You're missing a prediction for #{@match.team_home.abbrev} vs. #{@match.team_away.abbrev}")
-    Email.create(user: @user, topic: @match, notification: @notification)
+    mail(to: @user.email, subject: "Octacle - You're missing #{@missing_count} prediction#{'s' if @missing_count != 1} in #{@round.name}")
+    Email.create(user: @user, topic: @round, notification: @notification)
   end
 end
