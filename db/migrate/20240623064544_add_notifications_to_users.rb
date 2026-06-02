@@ -6,7 +6,7 @@ class AddNotificationsToUsers < ActiveRecord::Migration[6.1]
       user.notifications = {
         email: {
           prediction_missing: true,
-          competition_new: true
+          competition_new: false
         }
       }
       user.save
