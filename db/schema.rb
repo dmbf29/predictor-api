@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_06_27_134655) do
+ActiveRecord::Schema.define(version: 2026_06_03_000001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -319,19 +319,19 @@ ActiveRecord::Schema.define(version: 2024_06_27_134655) do
     ORDER BY ps.user_id;
   SQL
   create_view "leaderboard_rankings", materialized: true, sql_definition: <<-SQL
-      SELECT DISTINCT ON ((rank() OVER (PARTITION BY l.id ORDER BY us.score DESC, us.accuracy DESC, us.completed_predictions DESC)), us.score, us.accuracy, us.completed_predictions, l.id, l.competition_id, us.user_id) l.id AS leaderboard_id,
-      us.user_id,
-      us.competition_id,
-      us.score,
-      us.max_possible_score,
-      us.total_predictions,
-      us.completed_predictions,
-      us.correct_predictions,
-      us.accuracy,
-      rank() OVER (PARTITION BY l.id ORDER BY us.score DESC, us.accuracy DESC, us.completed_predictions DESC) AS user_rank
+      SELECT DISTINCT ON (l.id, m.user_id) l.id AS leaderboard_id,
+      m.user_id,
+      l.competition_id,
+      COALESCE(us.score, (0)::bigint) AS score,
+      COALESCE(us.max_possible_score, (0)::bigint) AS max_possible_score,
+      COALESCE(us.total_predictions, (0)::bigint) AS total_predictions,
+      COALESCE(us.completed_predictions, (0)::bigint) AS completed_predictions,
+      COALESCE(us.correct_predictions, (0)::bigint) AS correct_predictions,
+      COALESCE(us.accuracy, (0)::numeric) AS accuracy,
+      rank() OVER (PARTITION BY l.id ORDER BY COALESCE(us.score, (0)::bigint) DESC, COALESCE(us.accuracy, (0)::numeric) DESC, COALESCE(us.completed_predictions, (0)::bigint) DESC) AS user_rank
      FROM ((leaderboards l
        JOIN memberships m ON ((m.leaderboard_id = l.id)))
-       JOIN user_scores us ON (((us.user_id = m.user_id) AND (us.competition_id = l.competition_id))))
-    ORDER BY (rank() OVER (PARTITION BY l.id ORDER BY us.score DESC, us.accuracy DESC, us.completed_predictions DESC)), us.score, us.accuracy, us.completed_predictions;
+       LEFT JOIN user_scores us ON (((us.user_id = m.user_id) AND (us.competition_id = l.competition_id))))
+    ORDER BY l.id, m.user_id;
   SQL
 end
