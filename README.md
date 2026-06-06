@@ -10,6 +10,7 @@ bundle install
 ```
 rails db:create
 rails db:migrate
+rails world_cup:create
 ```
 ### Launch Sidekiq
 ```
