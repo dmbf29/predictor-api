@@ -1,4 +1,4 @@
-json.extract! match, :id, :kickoff_time, :status, :group_id, :next_match_id, :round_id, :location
+json.extract! match, :id, :kickoff_time, :status, :group_id, :next_match_id, :round_id, :location, :minute
 json.round_number match.round.number
 json.team_home do
   json.partial! match.team_home
@@ -11,7 +11,7 @@ end
 json.team_away do
   json.partial! match.team_away
   if %w[finished started].include?(match[:status])
-    json.score match.team_away_score 
+    json.score match.team_away_score
     json.et_score match.team_away_et_score
     json.ps_score match.team_away_ps_score
   end

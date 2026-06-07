@@ -4,16 +4,21 @@ namespace :match do
     return 'Not allowed in production' if Rails.env.production?
 
     @competition = Competition.last
-    completed_matches = @competition.matches.order(kickoff_time: :asc).first(5)
-    completed_matches.each do |match|
+    completed_matches = @competition.matches.order(kickoff_time: :asc).first(7)
+    completed_matches.each_with_index do |match, index|
       puts "#{match.team_home.name} (H) vs. #{match.team_away.name} (A)"
-      User.find_each do |user|
+      User.where(admin: true).each do |user|
         prediction = Prediction.find_or_initialize_by(user: user, match: match)
         prediction.choice = Prediction.choices.keys.sample
         prediction.save
         puts "- #{prediction.user.name} choose #{prediction.choice}"
       end
-      match.finished!
+      if [5, 6].include?(index)
+        match.started!
+        match.minute = rand(1..90)
+      else
+        match.finished!
+      end
       match.team_home_score = rand(0..3)
       match.team_away_score = rand(0..3)
       match.save
