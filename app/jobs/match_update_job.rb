@@ -34,6 +34,7 @@ class MatchUpdateJob < ApplicationJob
         match.group = Group.find_by(round: match.round, api_code: match_info["group"]) if match_info["group"]
         match.api_id = match_info['id']
         match.location = match_info['venue']
+        match.minute = match_info['minute']
         match.kickoff_time = kickoff_time
         match.save
         p match.errors.full_messages if match.errors.any?
