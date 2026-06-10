@@ -5,6 +5,7 @@ class V1::MatchesController < ApplicationController
     competition = Competition.find_by(id: params[:competition_id])
     @matches = policy_scope(Match).includes(
       :round,
+      :group,
       team_home: [badge_attachment: :blob, flag_attachment: :blob],
       team_away: [badge_attachment: :blob ,flag_attachment: :blob]
     ).where(competition: competition)
