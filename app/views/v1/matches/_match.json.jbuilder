@@ -1,4 +1,5 @@
 json.extract! match, :id, :kickoff_time, :status, :group_id, :next_match_id, :round_id, :location, :minute
+json.group_name match.group&.name
 json.round_number match.round.number
 json.team_home do
   json.partial! match.team_home
