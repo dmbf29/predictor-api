@@ -8,9 +8,11 @@ class UserMailer < ApplicationMailer
   def prediction_missing
     @user = params[:user]
     @round = params[:round]
+    @matchday = params[:matchday]
     @missing_count = params[:missing_count]
     @notification = params[:notification]
-    mail(to: @user.email, subject: "Octacle - You're missing #{@missing_count} prediction#{'s' if @missing_count != 1} in #{@round.name}")
+    stage_label = @matchday ? "#{@round.name} - Matchday #{@matchday}" : @round.name
+    mail(to: @user.email, subject: "Octacle - You're missing #{@missing_count} prediction#{'s' if @missing_count != 1} in #{stage_label}")
     Email.create(user: @user, topic: @round, notification: @notification)
   end
 end

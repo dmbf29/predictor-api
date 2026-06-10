@@ -13,12 +13,23 @@ class ScheduleDailyTasksJob < ApplicationJob
           MatchUpdateJob.set(wait_until: kickoff_time + i.minutes).perform_later(competition.id)
         end
       end
-      # Schedules notifications for rounds starting tomorrow
-      rounds_starting_tomorrow = Round.joins(:matches)
-        .where(competition: competition)
+      tomorrow_matches = competition.matches.where(kickoff_time: Date.tomorrow.all_day)
+
+      # Group stage: notify per matchday starting tomorrow
+      tomorrow_matches.where.not(matchday: nil)
+        .pluck(:round_id, :matchday).uniq
+        .each do |(round_id, matchday)|
+          Notifications::PredictionMissingJob.perform_later(round_id, matchday)
+        end
+
+      # Knockout rounds: notify only on the first day of the round
+      knockout_round_ids = tomorrow_matches.where(matchday: nil).select(:round_id)
+      Round.joins(:matches)
+        .where(competition: competition, id: knockout_round_ids)
         .group('rounds.id')
         .having('MIN(matches.kickoff_time) BETWEEN ? AND ?', Date.tomorrow.beginning_of_day, Date.tomorrow.end_of_day)
-      Notifications::PredictionMissingJob.perform_later(rounds_starting_tomorrow.pluck(:id))
+        .pluck(:id)
+        .each { |round_id| Notifications::PredictionMissingJob.perform_later(round_id) }
     end
   end
 end

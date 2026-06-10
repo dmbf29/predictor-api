@@ -47,12 +47,11 @@ class User < ApplicationRecord
     save
   end
 
-  def self.need_prediction_notifications(round)
+  def self.need_prediction_notifications(round, match_ids: nil)
     return [] if round.blank?
 
-    match_ids = round.matches.pluck(:id)
+    match_ids ||= round.matches.pluck(:id)
     users = round.competition.users_predicted.with_email_prediction_missing
-    # exclude users who have predictions for every match in the round
     users.where.not(
       id: joins(:predictions)
             .where(predictions: { match_id: match_ids })

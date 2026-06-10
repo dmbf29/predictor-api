@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_06_11_000001) do
+ActiveRecord::Schema.define(version: 2026_06_11_000002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -121,6 +121,7 @@ ActiveRecord::Schema.define(version: 2026_06_11_000001) do
     t.integer "team_away_ps_score"
     t.bigint "competition_id", null: false
     t.integer "minute"
+    t.integer "matchday"
     t.index ["competition_id"], name: "index_matches_on_competition_id"
     t.index ["group_id"], name: "index_matches_on_group_id"
     t.index ["next_match_id"], name: "index_matches_on_next_match_id"
