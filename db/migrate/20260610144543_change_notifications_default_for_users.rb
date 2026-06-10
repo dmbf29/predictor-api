@@ -3,8 +3,9 @@ class ChangeNotificationsDefaultForUsers < ActiveRecord::Migration[6.1]
     change_column_default :users, :notifications, from: {}, to: { email: { competition_new: false, prediction_missing: true } }
     execute <<~SQL
       UPDATE users
-      SET notifications = jsonb_set(notifications, '{email,prediction_missing}', 'true')
+      SET notifications = jsonb_set(COALESCE(notifications, '{}'::jsonb), '{email,prediction_missing}', 'true'::jsonb)
       WHERE notifications->'email'->>'prediction_missing' IS NULL
+         OR notifications IS NULL
     SQL
   end
 
