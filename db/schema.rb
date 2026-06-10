@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_06_07_063338) do
+ActiveRecord::Schema.define(version: 2026_06_10_144543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -193,7 +193,7 @@ ActiveRecord::Schema.define(version: 2026_06_07_063338) do
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
     t.string "photo_key"
-    t.jsonb "notifications", default: {}
+    t.jsonb "notifications", default: {"email"=>{"competition_new"=>false, "prediction_missing"=>true}}
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["notifications"], name: "index_users_on_notifications", using: :gin
@@ -321,8 +321,13 @@ ActiveRecord::Schema.define(version: 2026_06_07_063338) do
     ORDER BY ps.user_id;
   SQL
   create_view "leaderboard_rankings", materialized: true, sql_definition: <<-SQL
-      SELECT DISTINCT ON (l.id, m.user_id) l.id AS leaderboard_id,
-      m.user_id,
+      WITH unique_members AS (
+           SELECT DISTINCT memberships.leaderboard_id,
+              memberships.user_id
+             FROM memberships
+          )
+   SELECT l.id AS leaderboard_id,
+      um.user_id,
       l.competition_id,
       COALESCE(us.score, (0)::bigint) AS score,
       COALESCE(us.max_possible_score, (0)::bigint) AS max_possible_score,
@@ -332,8 +337,8 @@ ActiveRecord::Schema.define(version: 2026_06_07_063338) do
       COALESCE(us.accuracy, (0)::numeric) AS accuracy,
       rank() OVER (PARTITION BY l.id ORDER BY COALESCE(us.score, (0)::bigint) DESC, COALESCE(us.accuracy, (0)::numeric) DESC, COALESCE(us.completed_predictions, (0)::bigint) DESC) AS user_rank
      FROM ((leaderboards l
-       JOIN memberships m ON ((m.leaderboard_id = l.id)))
-       LEFT JOIN user_scores us ON (((us.user_id = m.user_id) AND (us.competition_id = l.competition_id))))
-    ORDER BY l.id, m.user_id;
+       JOIN unique_members um ON ((um.leaderboard_id = l.id)))
+       LEFT JOIN user_scores us ON (((us.user_id = um.user_id) AND (us.competition_id = l.competition_id))))
+    ORDER BY l.id, um.user_id;
   SQL
 end
