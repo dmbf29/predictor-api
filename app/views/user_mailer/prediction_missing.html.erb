@@ -14,11 +14,11 @@
             <td style="padding: 36px 40px 32px 40px;">
               <!-- Heading -->
               <h1 style="margin: 0 0 12px 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.4px; line-height: 1.2;">
-                <%= @round.name %> starts tomorrow!
+                <%= @matchday ? "#{@round.name} - Matchday #{@matchday}" : @round.name %> starts soon!
               </h1>
               <!-- Subtext -->
               <p style="margin: 0 0 28px 0; font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.55);">
-                Hey <strong style="color: rgba(255,255,255,0.85); font-weight: 600;"><%= @user.name %></strong> — you're missing <strong style="color: #ffffff;"><%= @missing_count %> prediction<%= 's' if @missing_count != 1 %></strong> for this round. Get them locked in before the games begin!
+                Hey <strong style="color: rgba(255,255,255,0.85); font-weight: 600;"><%= @user.name %></strong> — you're missing <strong style="color: #ffffff;"><%= @missing_count %> prediction<%= 's' if @missing_count != 1 %></strong> for this <%= @matchday ? 'matchday' : 'round' %>. Get them locked in before the games begin!
               </p>
               <!-- CTA Button -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
