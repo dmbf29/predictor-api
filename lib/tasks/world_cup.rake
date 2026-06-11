@@ -51,7 +51,7 @@ namespace :world_cup do
         api_code: 'GROUP_E',
         teams: [
           { name: 'Germany', abbrev: 'GER', ranking: 10, api_id: 759 },
-          { name: 'Curaçao', abbrev: 'CUR', ranking: 83, api_id: 9460 },
+          { name: 'Curaçao', abbrev: 'CUW', ranking: 83, api_id: 9460 },
           { name: 'Ivory Coast', abbrev: 'CIV', ranking: 34, api_id: 1935 },
           { name: 'Ecuador', abbrev: 'ECU', ranking: 24, api_id: 791 }
         ]
@@ -83,7 +83,7 @@ namespace :world_cup do
           { name: 'Spain', abbrev: 'ESP', ranking: 2, api_id: 760 },
           { name: 'Cape Verde Islands', abbrev: 'CPV', ranking: 68, api_id: 1930 },
           { name: 'Saudi Arabia', abbrev: 'KSA', ranking: 61, api_id: 801 },
-          { name: 'Uruguay', abbrev: 'URU', ranking: 17, api_id: 758 }
+          { name: 'Uruguay', abbrev: 'URY', ranking: 17, api_id: 758 }
         ]
       },
       'Group I' => {
