@@ -151,8 +151,7 @@ namespace :world_cup do
       { name: 'Round of 16', number: 3, api_name: 'LAST_16' },
       { name: 'Quarter-finals', number: 4, api_name: 'QUARTER_FINALS' },
       { name: 'Semi-finals', number: 5, api_name: 'SEMI_FINALS' },
-      { name: 'Third Place', number: 6, api_name: 'THIRD_PLACE' },
-      { name: 'Final', number: 7, api_name: 'FINAL' }
+      { name: 'Final', number: 6, api_name: 'FINAL' }
     ]
 
     first_round = nil
