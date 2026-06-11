@@ -29,6 +29,7 @@ class MatchUpdateJob < ApplicationJob
         match.team_home ||= team_home
         match.team_away ||= team_away
         next unless match.team_home && match.team_away # knock-out rounds with no teams yet
+        next if match_info['stage'] == 'THIRD_PLACE' # skip 3rd place game
 
         match.round = Round.find_by(competition: @competition, api_name: match_info['stage'])
         match.group = Group.find_by(round: match.round, api_code: match_info["group"]) if match_info["group"]
