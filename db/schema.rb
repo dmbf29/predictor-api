@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_06_11_000002) do
+ActiveRecord::Schema.define(version: 2026_06_11_105741) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -135,6 +135,7 @@ ActiveRecord::Schema.define(version: 2026_06_11_000002) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "leaderboard_id"
+    t.index ["leaderboard_id", "user_id"], name: "index_memberships_on_leaderboard_id_and_user_id", unique: true
     t.index ["leaderboard_id"], name: "index_memberships_on_leaderboard_id"
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
