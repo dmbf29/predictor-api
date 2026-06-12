@@ -21,12 +21,15 @@ class MatchUpdateFutureJob < ApplicationJob
         # match = @competition.matches.find_by(api_id: match_info['id']) || Match.new
         team_home = Team.find_by(api_id: match_info['home_id'])
         team_away = Team.find_by(api_id: match_info['away_id'])
-        match =
-          @competition.matches.where(team_home: team_home, team_away: team_away)
-                      .find_by('kickoff_time::date = ?', match_info['date']) || Match.new
+
+        match = @competition.matches.find_by(api_id: match_info['id']) ||
+                (team_home && team_away &&
+                  @competition.matches.where(team_home: team_home, team_away: team_away)
+                              .find_by('kickoff_time::date = ?', match_info['date'])) ||
+                Match.new
+
         match.team_home ||= team_home
         match.team_away ||= team_away
-        next unless match.team_home && match.team_away # knock-out rounds with no teams yet
 
         # Only adding a round for knockout stages, group isn't provided by API :/
         if %w[1 2 3].include?(match_info['round'])
@@ -34,6 +37,8 @@ class MatchUpdateFutureJob < ApplicationJob
         else
           match.round = Round.find_by(competition: @competition, api_name: match_info['round'])
         end
+        next unless match.round # can't persist without a round
+
         match.api_id = match_info['id']
         match.location = match_info['location']
         match.kickoff_time = kickoff_time

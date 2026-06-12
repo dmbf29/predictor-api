@@ -23,15 +23,20 @@ class MatchUpdateJob < ApplicationJob
         puts "Finding the match between : #{match_info['homeTeam']['name']} v #{match_info['awayTeam']['name']} (#{kickoff_time})"
         team_home = Team.find_by(abbrev: match_info['homeTeam']['tla'])
         team_away = Team.find_by(abbrev: match_info['awayTeam']['tla'])
-        match =
-        @competition.matches.where(team_home: team_home, team_away: team_away)
-        .find_by(kickoff_time: kickoff_time) || Match.new
+
+        match = @competition.matches.find_by(api_id: match_info['id']) ||
+                (team_home && team_away &&
+                  @competition.matches.where(team_home: team_home, team_away: team_away)
+                              .find_by(kickoff_time: kickoff_time)) ||
+                Match.new
+
         match.team_home ||= team_home
         match.team_away ||= team_away
-        next unless match.team_home && match.team_away # knock-out rounds with no teams yet
         next if match_info['stage'] == 'THIRD_PLACE' # skip 3rd place game
 
         match.round = Round.find_by(competition: @competition, api_name: match_info['stage'])
+        next unless match.round # can't persist without a round
+
         match.group = Group.find_by(round: match.round, api_code: match_info["group"]) if match_info["group"]
         match.api_id = match_info['id']
         match.location = match_info['venue']
@@ -41,8 +46,8 @@ class MatchUpdateJob < ApplicationJob
         match.save
         p match.errors.full_messages if match.errors.any?
 
-        # Update scores
-        match.update_with_api(match_info)
+        # Only update scores once teams are confirmed
+        match.update_with_api(match_info) if match.team_home && match.team_away
         puts 'Match Update'
       end
     end
