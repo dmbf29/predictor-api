@@ -1,5 +1,5 @@
 json.extract! match, :id, :kickoff_time, :status, :group_id, :next_match_id, :round_id, :location, :minute
-json.group_name match.group&.name
+json.group_name match.group&.name || match.round&.name
 json.round_number match.round.number
 if match.team_home
   json.team_home do
