@@ -1,7 +1,7 @@
 class Match < ApplicationRecord
   belongs_to :competition
-  belongs_to :team_away, class_name: 'Team'
-  belongs_to :team_home, class_name: 'Team'
+  belongs_to :team_away, class_name: 'Team', optional: true
+  belongs_to :team_home, class_name: 'Team', optional: true
   belongs_to :group, optional: true
   belongs_to :round
   belongs_to :next_match, class_name: 'Match', optional: true
@@ -10,7 +10,7 @@ class Match < ApplicationRecord
   validates :kickoff_time, presence: true
   validates :status, presence: true
   validates :api_id, uniqueness: { allow_nil: true }
-  validates_uniqueness_of :kickoff_time, scope: %i[team_home team_away]
+  validates_uniqueness_of :kickoff_time, scope: %i[team_home team_away], if: -> { team_home_id? || team_away_id? }
   validate :check_team_and_day_uniqueness
   enum status: { upcoming: 'upcoming', started: 'started', finished: 'finished' }, _default: :upcoming
 
@@ -21,6 +21,7 @@ class Match < ApplicationRecord
   after_commit :refresh_materialized_views
 
   def check_team_and_day_uniqueness
+    return unless team_home && team_away
     if Match.where(team_away: team_away, team_home: team_home).where.not(id: self).find_by("kickoff_time::date = ?", kickoff_time.to_date)
       errors.add(:kickoff_time, "isn't available on this date")
     end
