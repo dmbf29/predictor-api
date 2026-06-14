@@ -1,0 +1,69 @@
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(167.4deg, #201e46 0%, #6690b7 88.73%);">
+  <!-- Outer wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td align="center" style="padding: 24px 16px;">
+        <!-- Card -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 480px; background: linear-gradient(167.4deg, #201e46 0%, #6690b7 88.73%); border: 1px solid rgba(255,255,255,0.13); border-radius: 24px; overflow: hidden;">
+          <!-- Top accent bar -->
+          <tr>
+            <td style="height: 3px; background: linear-gradient(90deg, #fa5151, #ff8c5a, #fa5151); background-size: 200% 100%;"></td>
+          </tr>
+          <!-- Body content -->
+          <tr>
+            <td style="padding: 36px 40px 32px 40px;">
+              <!-- Heading -->
+              <h1 style="margin: 0 0 12px 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.4px; line-height: 1.2;">
+                You're missing some predictions!
+              </h1>
+              <!-- Subtext -->
+              <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.55);">
+                Hey <strong style="color: rgba(255,255,255,0.85); font-weight: 600;"><%= @user.name %></strong> — we owe you an apology. When the app first launched, some matches were missing from the schedule. They're all in now, and you still have time to make your picks!
+              </p>
+              <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.55);">
+                We noticed you haven't predicted those games yet. The first one kicks off <strong style="color: #ffffff;">today</strong> — <strong style="color: rgba(255,255,255,0.85);">Germany vs Cura&ccedil;ao</strong> on <strong style="color: rgba(255,255,255,0.85);">Sunday June 14th at 12:00pm US Central time</strong>. Lock in your prediction before it's too late!
+              </p>
+              <!-- CTA Button -->
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td align="center">
+                    <a
+                      href="https://www.octacle.app/competitions/predictions"
+                      style="display: inline-block; padding: 14px 32px; background: #fa5151; color: #ffffff; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 12px; letter-spacing: 0.1px;"
+                    >
+                      Complete my predictions &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- Divider -->
+          <tr>
+            <td style="padding: 0 40px;">
+              <div style="height: 1px; background: rgba(255,255,255,0.09);"></div>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 20px 40px; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.07);">
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td>
+                    <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.25);">
+                      &copy; <%= Time.current.year %> Octacle. All rights reserved.
+                    </p>
+                  </td>
+                  <td align="right">
+                    <a href="https://www.octacle.app/profile" style="font-size: 12px; color: rgba(255,255,255,0.3); text-decoration: none;">Unsubscribe</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <!-- /Card -->
+      </td>
+    </tr>
+  </table>
+</body>

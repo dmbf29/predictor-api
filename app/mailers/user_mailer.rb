@@ -5,6 +5,11 @@ class UserMailer < ApplicationMailer
   #
   #   en.user_mailer.prediction_missing.subject
   #
+  def match_missing
+    @user = params[:user]
+    mail(to: @user.email, subject: "Octacle - You're missing some predictions")
+  end
+
   def prediction_missing
     @user = params[:user]
     @round = params[:round]
