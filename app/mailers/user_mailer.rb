@@ -7,7 +7,9 @@ class UserMailer < ApplicationMailer
   #
   def match_missing
     @user = params[:user]
+    @notification = params[:notification]
     mail(to: @user.email, subject: "Octacle - You're missing some predictions")
+    Email.create(user: @user, topic: nil, notification: @notification)
   end
 
   def prediction_missing

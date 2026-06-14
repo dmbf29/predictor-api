@@ -8,8 +8,11 @@ namespace :email do
     users_missing_prediction = users_with_predictions
       .with_email_prediction_missing
       .where.not(id: match.predictions.select(:user_id))
-    users_missing_prediction.each do |user|
-      UserMailer.with(user: user).match_missing.deliver_now
+    notification_key = "match_missing_match_#{match.id}"
+    users_missing_prediction.find_each do |user|
+      next if Email.exists?(user: user, topic: nil, notification: notification_key)
+
+      UserMailer.with(user: user, notification: notification_key).match_missing.deliver_later
     end
   end
 
