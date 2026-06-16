@@ -1,3 +1,5 @@
+require "cloudinary"
+
 namespace :user do
   desc "Takes uploads from Cloudinary and attaches to users who don't have an image"
   task :attach_photos, [:competition_id] => :environment do |t, args|
@@ -14,50 +16,47 @@ namespace :user do
   desc "Uploads all photos in the folder to Cloudinary"
   task upload_photos: :environment do
     # script/upload_thumbs.rb
+    thumbs_dir = Rails.root.join("db", "thumbs")
 
-  require "cloudinary"
+    files = Dir.glob(thumbs_dir.join("*.{avif,jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}"))
 
-  thumbs_dir = Rails.root.join("db", "thumbs")
+    puts "Found #{files.count} image(s)."
 
-  files = Dir.glob(thumbs_dir.join("*.{avif,jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}"))
+    public_ids = []
 
-  puts "Found #{files.count} image(s)."
+    files.each do |file_path|
+      filename = File.basename(file_path, ".*")
 
-  public_ids = []
+      result = Cloudinary::Uploader.upload(
+        file_path,
+        public_id: filename.downcase,
+        overwrite: true,
+        transformation: [
+          {
+            width: 200,
+            height: 200,
+            crop: "thumb",
+            gravity: "face",
+            zoom: 0.75
+          }
+        ]
+      )
 
-  files.each do |file_path|
-    filename = File.basename(file_path, ".*")
+      public_ids << result["public_id"]
 
-    result = Cloudinary::Uploader.upload(
-      file_path,
-      public_id: filename.downcase,
-      overwrite: true,
-      transformation: [
-        {
-          width: 200,
-          height: 200,
-          crop: "thumb",
-          gravity: "face",
-          zoom: 0.75
-        }
-      ]
-    )
+      puts "✓ Uploaded #{filename}"
+      puts "  Public ID: #{result['public_id']}"
+      puts
+    end
 
-    public_ids << result["public_id"]
-
-    puts "✓ Uploaded #{filename}"
-    puts "  Public ID: #{result["public_id"]}"
     puts
-  end
-
-  puts
-  puts "=== PUBLIC IDS ==="
-  puts
-  puts "DEFAULT_AVATARS = %w["
-  public_ids.each do |id|
-    puts "  #{id}"
-  end
-  puts "]"
+    puts "=== PUBLIC IDS ==="
+    puts
+    puts "DEFAULT_AVATARS = %w["
+    public_ids.each do |id|
+      puts "  #{id}"
+    end
+    puts "]"
 
   end
 end

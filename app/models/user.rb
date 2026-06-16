@@ -19,7 +19,7 @@ class User < ApplicationRecord
     where("notifications->'email'->>'prediction_missing' = ?", 'true')
   }
 
-  # These are uploaded the user rake task: rails user:upload_photos
+  # These are hard-coded/uploaded via rake task: rails user:upload_photos
   DEFAULT_AVATARS = %w[
     diaz
     gyokeres
@@ -46,7 +46,7 @@ class User < ApplicationRecord
 
   validates :name, presence: true, on: :update, if: :name_changed?
 
-  before_save :assign_default_avatar
+  before_validation :assign_default_avatar, on: :create
   after_create :auto_join_leaderboards
 
   def name
@@ -89,7 +89,7 @@ class User < ApplicationRecord
   private
 
   def assign_default_avatar
-    self.photo_key ||= DEFAULT_AVATARS.sample
+    self.photo_key = DEFAULT_AVATARS.sample if photo_key.blank?
   end
 
   def auto_join_leaderboards
