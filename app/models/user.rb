@@ -19,8 +19,34 @@ class User < ApplicationRecord
     where("notifications->'email'->>'prediction_missing' = ?", 'true')
   }
 
+  # These are uploaded the user rake task: rails user:upload_photos
+  DEFAULT_AVATARS = %w[
+    diaz
+    gyokeres
+    haaland
+    hakimi
+    kane
+    kubo
+    lukaku
+    mane
+    mbappe
+    messi
+    modric
+    neymar
+    ochoa
+    pulisic
+    robertson
+    ronaldo
+    ruediger
+    salah
+    son
+    virgil
+    yamal
+  ].freeze
+
   validates :name, presence: true, on: :update, if: :name_changed?
 
+  before_save :assign_default_avatar
   after_create :auto_join_leaderboards
 
   def name
@@ -61,6 +87,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def assign_default_avatar
+    self.photo_key ||= DEFAULT_AVATARS.sample
+  end
 
   def auto_join_leaderboards
     DatabaseViews.run_without_callback(then_refresh: true) do
