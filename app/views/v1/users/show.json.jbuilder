@@ -1,6 +1,7 @@
 json.partial! @user
 if @competition
-  json.points @user.scores.find_by(competition: @competition).score
-  json.accuracy @user.scores.find_by(competition: @competition).accuracy.to_f
+  user_score = @user.scores.find_by(competition: @competition)
+  json.points user_score&.score || 0
+  json.accuracy (user_score&.accuracy || 0).to_f
   json.possible_points @competition.max_possible_score
 end
