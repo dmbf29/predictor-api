@@ -20,7 +20,12 @@ class DatabaseViews
 
   def self.run_without_callback(then_refresh: false, &block)
     deactivate_callback
-    yield
-    activate_callback(then_refresh: then_refresh)
+    completed = false
+    begin
+      yield
+      completed = true
+    ensure
+      activate_callback(then_refresh: completed && then_refresh)
+    end
   end
 end
