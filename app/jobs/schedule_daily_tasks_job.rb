@@ -8,10 +8,6 @@ class ScheduleDailyTasksJob < ApplicationJob
       matches = competition.matches.where(kickoff_time: Date.today.all_day)
       matches.pluck(:kickoff_time).uniq.each do |kickoff_time|
         MatchStartedJob.set(wait_until: kickoff_time).perform_later(kickoff_time)
-        # Calls the API during the matches to get the current time
-        150.times do |i|
-          MatchUpdateJob.set(wait_until: kickoff_time + i.minutes).perform_later(competition.id)
-        end
       end
       tomorrow_matches = competition.matches.where(kickoff_time: Date.tomorrow.all_day)
 
