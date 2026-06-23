@@ -5,27 +5,15 @@ class DatabaseViews
     async ? RefreshDatabaseViewsJob.perform_later : RefreshDatabaseViewsJob.perform_now
   end
 
-  def self.deactivate_callback
-    MODELS.each do |model|
-      model.skip_callback(:commit, :after, :refresh_materialized_views, raise: false)
-    end
-  end
-
-  def self.activate_callback(then_refresh: false)
-    MODELS.each do |model|
-      model.set_callback(:commit, :after, :refresh_materialized_views)
-    end
-    refresh if then_refresh
-  end
-
   def self.run_without_callback(then_refresh: false, &block)
-    deactivate_callback
+    Thread.current[:skip_refresh_materialized_views] = true
     completed = false
     begin
       yield
       completed = true
     ensure
-      activate_callback(then_refresh: completed && then_refresh)
+      Thread.current[:skip_refresh_materialized_views] = false
+      refresh if completed && then_refresh
     end
   end
 end
