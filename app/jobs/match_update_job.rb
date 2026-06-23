@@ -17,6 +17,10 @@ class MatchUpdateJob < ApplicationJob
     ).body
     parsed_response = JSON.parse(response)
     matches = parsed_response['matches']
+    if matches.nil?
+      Rails.logger.error("MatchUpdateJob: unexpected API response — #{parsed_response.inspect}")
+      return
+    end
     DatabaseViews.run_without_callback(then_refresh: true) do
       matches.each do |match_info|
         kickoff_time = DateTime.parse(match_info['utcDate'])

@@ -12,6 +12,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def refresh_materialized_views
+    return if Thread.current[:skip_refresh_materialized_views]
     DatabaseViews.refresh(async: true)
   end
 end
